@@ -1,0 +1,153 @@
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.registration-form h2 {
+  margin-top: 0;
+  color: #0056b3;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.3s;
+  text-transform: uppercase; /* Esto convierte todo el texto a mayúsculas */
+}
+
+/* También podemos aplicarlo a las etiquetas si lo deseas */
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #0056b3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.25);
+}
+
+.phone-group .phone-input-container {
+  display: flex;
+  gap: 5px;
+}
+
+.phone-group .country-code-select {
+  flex-basis: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: auto;
+  min-width: 100px;
+}
+
+.phone-group .phone-number-input {
+  flex-grow: 1;
+  width: 50%;
+  min-width: 0; /* Esto es importante para evitar que el input se desborde */
+}
+
+.phone-input-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Asegurarse de que el texto no se desborde */
+.form-group input[type="tel"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error-message {
+  color: #d9534f;
+  font-size: 0.8em;
+  margin-top: 4px;
+}
+
+@media (max-width: 380px) {
+  .phone-group .phone-input-container {
+    flex-direction: column;
+  }
+  
+  .phone-group .country-code-select {
+    width: 150%;
+  }
+}
+
+@media (max-width: 768px) {
+  .registration-form {
+    padding: 15px;
+  }
+  
+  .registration-form h2 {
+    font-size: 1.2rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="tel"],
+  .form-group select {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .phone-group .phone-input-container {
+    flex-direction: row; /* Mantener en fila incluso en móviles */
+  }
+  
+  .phone-group .country-code-select {
+    min-width: 80px;
+    flex-basis: 80px;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="tel"],
+  .form-group select {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+  
+  .phone-group .country-code-select,
+  .phone-group .phone-number-input {
+    width: 100%;
+  }
+  
+  .form-group.consent-group label {
+    font-size: 0.8rem;
+  }

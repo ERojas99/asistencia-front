@@ -5,9 +5,35 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f7f6;
+  color: #333;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.App {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+h1, h2 {
+    color: #0056b3; /* Un color azul como ejemplo */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilos básicos para responsividad */
+@media (max-width: 768px) {
+    .App {
+        margin: 10px;
+        padding: 15px;
+    }
+    /* Ajustes adicionales para móviles */
 }
