@@ -39,17 +39,17 @@ function RegistrationForm({ formData, onChange }) {
     let isValid = true;
     
     if (!data.firstName.trim()) {
-      newErrors.firstName = 'EL NOMBRE ES OBLIGATORIO';
+      newErrors.firstName = 'El nombre es obligatorio';
       isValid = false;
     }
     
     if (!data.lastName.trim()) {
-      newErrors.lastName = 'LOS APELLIDOS SON OBLIGATORIOS';
+      newErrors.lastName = 'Los apellidos son obligatorios';
       isValid = false;
     }
     
     if (!data.email.trim()) {
-      newErrors.email = 'EL CORREO ELECTRÓNICO ES OBLIGATORIO';
+      newErrors.email = 'El correo electrónico es obligatorio';
       isValid = false;
     } else if (!validateEmail(data.email)) {
       newErrors.email = 'FORMATO DE CORREO ELECTRÓNICO INVÁLIDO';

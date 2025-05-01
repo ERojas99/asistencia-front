@@ -1,10 +1,21 @@
-.App {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* .App {
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 18px;
+  background-color: #eaecea;
+  box-shadow: 0 2px 4px rgba(93,81,58,93);
   border-radius: 8px;
+} */
+
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('./assets/fondo_tecon.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 @media (max-width: 768px) {

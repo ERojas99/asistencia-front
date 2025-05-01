@@ -11,7 +11,7 @@
 
 .registration-form h2 {
   margin-top: 0;
-  color: #0056b3;
+  color: #30c645;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
 }
@@ -49,9 +49,9 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #0056b3;
+  border-color: #42e761;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.25);
+  box-shadow: 0 0 0 2px rgba(1, 1, 12,0);
 }
 
 .phone-group .phone-input-container {
@@ -88,7 +88,7 @@
 
 .error-message {
   color: #d9534f;
-  font-size: 0.8em;
+  font-size: 0.6em;
   margin-top: 4px;
 }
 
