@@ -68,7 +68,7 @@ function RegistrationPage() {
           // Recargar la página después de 3 segundos
           setTimeout(() => {
             window.location.reload();
-          }, 3000);
+          }, 1000);
         } else {
           // Error en el registro
           setSubmitResult({ 
