@@ -66,6 +66,9 @@ function RegistrationForm({ formData, onChange }) {
     
     if (type === 'checkbox') {
       newValue = checked;
+    } else if (name === 'phoneNumber') {
+      // Eliminar todos los caracteres que no sean números
+      newValue = value.replace(/\D/g, '')
     } else {
       // Convertir a mayúsculas si es un campo de texto o email
       newValue = type === 'text' || type === 'email' ? value.toUpperCase() : value;
@@ -150,6 +153,7 @@ function RegistrationForm({ formData, onChange }) {
             onChange={handleChange}
             placeholder="Ej: 3123456789"
             className="phone-number-input"
+            pattern="[0-9]*"
           />
         </div>
       </div>

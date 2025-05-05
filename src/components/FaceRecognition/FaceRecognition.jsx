@@ -18,7 +18,8 @@ function FaceRecognition({ onFaceCapture }) {
   useEffect(() => {
     const loadModels = async () => {
       try {
-        const MODEL_URL = process.env.PUBLIC_URL + '/models';
+        // Cambiar esta línea
+        const MODEL_URL = '/models';
         
         setFeedback('Cargando modelos de reconocimiento facial...');
         
