@@ -91,6 +91,10 @@ function RegistrationPage() {
         };
         
         const response = await fetch('http://localhost:5000/api/visitors', {
+
+        // Enviar datos al backend
+        //const response = await fetch('https://2364-45-171-182-198.ngrok-free.app/api/visitors', {
+
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
