@@ -1,0 +1,28 @@
+/* ProgressBar.css */
+.progress-bar-container {
+  width: 100%;
+  background-color: #54595F; /* --e-global-color-secondary: Dark Gray de tu paleta */
+  border-radius: 8px;
+  margin-bottom: 25px; /* Espacio debajo de la barra */
+  height: 20px; /* Altura de la barra */
+  overflow: hidden; /* Para que el relleno no se salga de los bordes redondeados */
+  border: 1px solid #0D1B35; /* Borde oscuro */
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #6EC1E4, #07E7F9); /* Degradado de tu paleta */
+  border-radius: 8px; /* Mismos bordes redondeados */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0B1B2B; /* Texto oscuro para contraste con el degradado */
+  font-weight: bold;
+  font-size: 0.8em;
+  transition: width 0.5s ease-in-out; /* Animación suave del progreso */
+}
+
+/* Opcional: Estilo para el texto dentro de la barra si decides mostrarlo */
+.progress-bar-text {
+  padding: 0 5px;
+}

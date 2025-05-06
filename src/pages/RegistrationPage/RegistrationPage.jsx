@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
-// Importa un nuevo componente para la verificación de ID (a crear)
-// import IDVerification from '../../components/IDVerification/IDVerification'; 
+
+import ProgressBar from '../../components/ProgressBar/ProgressBar'; // Importar ProgressBar
 import './RegistrationPage.css';
 
 function RegistrationPage() {
@@ -28,6 +28,8 @@ function RegistrationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: null, message: '' }); // Cambiado success a null inicialmente
   
+  const totalSteps = 3; // Definir el número total de pasos aquí
+
   const handleFormChange = (newFormData, isValid) => {
     setFormData(newFormData);
     setIsFormValid(isValid);
@@ -143,7 +145,15 @@ function RegistrationPage() {
   
   return (
     <div className="registration-page">
-      <h1>REGISRO DE VISITANTES - Paso {currentStep} de 3</h1> {/* Actualizado para mostrar el paso */}
+      <h1>REGISTRO DE VISITANTES</h1> {/* Título simplificado */}
+      
+      {/* Barra de Progreso */}
+      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+
+      {/* Indicador de Pasos (opcional, ya que la barra de progreso también informa) */}
+      <div className="step-indicator">
+        Paso {currentStep} de {totalSteps}
+      </div>
       
       {submitResult.message && (
         <div className={`result-message ${submitResult.success === true ? 'success' : submitResult.success === false ? 'error' : ''}`}>
@@ -155,6 +165,7 @@ function RegistrationPage() {
         {/* Renderizado condicional basado en el paso actual */}
         {currentStep === 1 && (
           <div className="step-container form-section">
+            <h2>Paso 1: Datos Personales</h2> {/* Título del paso */}
             <RegistrationForm 
               formData={formData} 
               onChange={handleFormChange} 
@@ -164,6 +175,7 @@ function RegistrationPage() {
         
         {currentStep === 2 && (
           <div className="step-container face-recognition-section">
+             <h2>Paso 2: Reconocimiento Facial</h2> {/* Título del paso */}
              {/* Asegúrate de pasar la imagen capturada si quieres mostrarla */}
             <FaceRecognition 
               onFaceCapture={handleFaceCapture}
@@ -174,7 +186,7 @@ function RegistrationPage() {
 
         {currentStep === 3 && (
            <div className="step-container id-verification-section">
-            <h2>Paso 3: Verificación de Identidad</h2>
+            <h2>Paso 3: Verificación de Identidad</h2> {/* Título del paso */}
             <p>Aquí iría el componente para cargar o capturar el documento de identidad.</p>
             {/* <IDVerification onVerify={handleIdVerification} /> */}
             {/* Placeholder hasta crear el componente */}
