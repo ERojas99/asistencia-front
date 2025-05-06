@@ -79,34 +79,76 @@
 /* Estilos existentes */
 
 /* Mejoras para dispositivos móviles */
-@media (max-width: 768px) {
-  .registration-container {
-    flex-direction: column;
-  }
-  
-  .form-section, 
-  .face-recognition-section {
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .registration-page h1 {
-    font-size: 1.5rem;
-    text-align: center;
-  }
-  
-  .submit-section button {
-    width: 100%;
-    padding: 15px;
-    font-size: 1rem;
-  }
-  
-  .result-message {
-    padding: 10px;
-    font-size: 0.9rem;
-  }
+.step-container {
+  margin-bottom: 20px; /* Espacio debajo de cada paso */
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
 }
 
+.id-verification-section {
+    text-align: center;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between; /* Alinea botones a los extremos */
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.navigation-buttons button {
+  padding: 10px 25px;
+  font-size: 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.navigation-buttons button[type="button"] {
+  background-color: #6c757d; /* Gris */
+  color: white;
+}
+
+.navigation-buttons button[type="button"]:hover:not(:disabled) {
+   background-color: #5a6268;
+}
+
+.navigation-buttons button[type="submit"] {
+  background-color: #28a745; /* Verde */
+  color: white;
+}
+
+.navigation-buttons button[type="submit"]:hover:not(:disabled) {
+   background-color: #218838;
+}
+
+.navigation-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Ajuste para cuando solo hay un botón (Siguiente o Completar) */
+.navigation-buttons button:only-child {
+   margin-left: auto; /* Mueve el único botón a la derecha */
+}
+
+/* Media query para móviles */
+@media (max-width: 768px) {
+  .navigation-buttons {
+    flex-direction: column-reverse; /* Pone Siguiente/Completar arriba */
+    gap: 10px;
+  }
+  .navigation-buttons button {
+     width: 100%;
+  }
+   .navigation-buttons button:only-child {
+     margin-left: 0; /* Resetea el margen en móviles */
+  }
+}
 @media (max-width: 480px) {
   .registration-page {
     padding: 10px;
