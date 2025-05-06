@@ -303,6 +303,32 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Añadir media query para dispositivos móviles */
+@media (max-width: 768px) {
+  .face-recognition {
+    max-width: 100%;
+    padding: 10px;
+    margin: 0 auto;
+    width: 90%;
+  }
+  
+  .video-container {
+    height: 250px; /* Reducir altura en móviles */
+  }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .face-recognition {
+    width: 95%;
+    padding: 8px;
+  }
+  
+  .video-container {
+    height: 220px; /* Aún más pequeño para pantallas muy pequeñas */
+  }
+}
+
 .video-container {
   position: relative;
   width: 100%;

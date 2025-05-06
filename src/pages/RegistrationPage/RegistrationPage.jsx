@@ -3,6 +3,7 @@ import RegistrationForm from '../../components/RegistrationForm/RegistrationForm
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
 
 import ProgressBar from '../../components/ProgressBar/ProgressBar'; // Importar ProgressBar
+import CircleAnimation from '../../components/CircleAnimation/CircleAnimation';
 import './RegistrationPage.css';
 
 function RegistrationPage() {
@@ -145,7 +146,8 @@ function RegistrationPage() {
   
   return (
     <div className="registration-page">
-      <h1>REGISTRO DE VISITANTES</h1> {/* Título simplificado */}
+      <CircleAnimation />
+      <h1>REGISTRO DE VISITANTES</h1>
       
       {/* Barra de Progreso */}
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />

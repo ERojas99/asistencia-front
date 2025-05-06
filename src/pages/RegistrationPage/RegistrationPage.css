@@ -2,6 +2,11 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    position: relative; /* Asegura que el contenido esté por encima de las animaciones */
+    z-index: 1; /* Coloca el contenido por encima de las animaciones */
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente */
+    border-radius: 10px; /* Bordes redondeados para el contenedor principal */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
 .registration-page h1 {
@@ -38,13 +43,24 @@
     min-width: 300px;
 }
 
-.face-recognition-section {
+.step-container.face-recognition-section {
     flex: 1;
     min-width: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    overflow: hidden; /* Evita que el contenido se salga */
+    max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
+    box-sizing: border-box; /* Incluye padding y border en el ancho total */
+}
 
+@media (max-width: 768px) {
+  .step-container.face-recognition-section {
+    padding: 10px;
+    min-width: auto; /* Elimina el ancho mínimo en móviles */
+    width: 100%; /* Ocupa todo el ancho disponible */
+  }
 }
 
 .consent-section {
