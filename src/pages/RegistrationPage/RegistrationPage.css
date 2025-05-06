@@ -232,3 +232,39 @@
     /* Asegúrate de que el texto sea visible si el degradado no se aplica */
     color: #6EC1E4; /* Fallback color */
 }
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+
+.header-logo {
+    max-width: 200px;
+    height: auto;
+    display: block;
+    border-radius: 15px; /* Bordes redondeados solo en las esquinas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Añade una sombra sutil */
+    animation: float 3s ease-in-out infinite; /* Aplica la animación de flotación */
+}
+
+/* Animación de subida y bajada */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Ajuste para dispositivos móviles */
+@media (max-width: 480px) {
+    .header-logo {
+        max-width: 150px;
+    }
+}

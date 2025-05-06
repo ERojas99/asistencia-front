@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
-
-import ProgressBar from '../../components/ProgressBar/ProgressBar'; // Importar ProgressBar
-import CircleAnimation from '../../components/CircleAnimation/CircleAnimation';
+import ProgressBar from '../../components/ProgressBar/ProgressBar';
+import logo from '../../assets/logoANDICOM.png'; // Importar el logo
 import './RegistrationPage.css';
 
 function RegistrationPage() {
@@ -146,7 +145,9 @@ function RegistrationPage() {
   
   return (
     <div className="registration-page">
-      <CircleAnimation />
+      <div className="logo-container">
+        <img src={logo} alt="Logo" className="header-logo" />
+      </div>
       <h1>REGISTRO DE VISITANTES</h1>
       
       {/* Barra de Progreso */}
