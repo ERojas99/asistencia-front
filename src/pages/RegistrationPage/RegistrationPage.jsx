@@ -11,6 +11,7 @@ function RegistrationPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    idNumber: '',  // Nuevo campo para cédula
     email: '',
     countryCode: '+57',
     phoneNumber: '',
