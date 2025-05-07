@@ -188,12 +188,12 @@
 
 .capture-button:hover:not(:disabled) {
   background-color: #003d7a;
-  color:#FFFFFF;
+  color:#FFFFFF
 }
 
 .camera-button:disabled,
 .capture-button:disabled {
-  background-color: #f0ecec;
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
@@ -592,7 +592,7 @@
 
 .camera-button:disabled,
 .capture-button:disabled {
-  background-color: #101111;
+  background-color: #95a5a6;
   cursor: not-allowed;
 }
 
