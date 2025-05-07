@@ -119,7 +119,7 @@ function RegistrationPage() {
         if (response.ok) {
           setSubmitResult({ 
             success: true, 
-            message: '¡Registro completado con éxito! La página se recargará en 3 segundos.' 
+            message: '¡Registro completado con éxito!' 
           });
           setTimeout(() => {
             window.location.reload();

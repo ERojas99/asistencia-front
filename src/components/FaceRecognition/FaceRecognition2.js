@@ -13,7 +13,6 @@ function FaceRecognition({ onFaceCapture }) {
   const [isHuman, setIsHuman] = useState(false);
   const [isAdult, setIsAdult] = useState(false);
   const [faceEmbeddings, setFaceEmbeddings] = useState(null);
-  const [correctPose, setCorrectPose] = useState(false);
   
   // Estados para la detección de vida
   const [captureStep, setCaptureStep] = useState(0); // 0: no iniciado, 1: frontal, 2: derecha, 3: izquierda, 4: completado
@@ -476,7 +475,7 @@ function FaceRecognition({ onFaceCapture }) {
           )}
         </div>
         
-        {captureStep > 0 && captureStep < 4 && (
+        {captureStep > 0 && (
           <div className="capture-steps">
             <div className={`step-indicator ${captureStep >= 1 ? 'active' : ''} ${captureStep > 1 ? 'completed' : ''}`}>
               Frontal
@@ -493,7 +492,7 @@ function FaceRecognition({ onFaceCapture }) {
       
       <div className="button-container">
         <button 
-          className="camera-button"
+          className={`camera-button ${isCameraActive ? 'active' : ''}`} 
           onClick={toggleCamera}
           disabled={!isModelLoaded}
         >
@@ -520,14 +519,14 @@ function FaceRecognition({ onFaceCapture }) {
           </button>
         )}
         
-        {/* {captureStep > 0 && (
+        {captureStep > 0 && (
           <button 
-            className="reset-button capture-button" 
+            className="reset-button" 
             onClick={resetCapture}
           >
             Reiniciar
           </button>
-        )} */}
+        )}
       </div>
     </div>
   );
