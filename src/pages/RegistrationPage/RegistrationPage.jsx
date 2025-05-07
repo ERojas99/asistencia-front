@@ -5,6 +5,7 @@ import ProgressBar from '../../components/ProgressBar/ProgressBar';
 import FaceWarning from '../../pages/FaceWarning/FaceWarning';
 import logo from '../../assets/logoANDICOM.png'; // Importar el logo
 import './RegistrationPage.css';
+import IDVerification from '../../components/IDVerification/IDVerification';
 
 function RegistrationPage() {
   const [currentStep, setCurrentStep] = useState(1); // Nuevo estado para el paso actual
@@ -21,11 +22,11 @@ function RegistrationPage() {
   
   const [faceData, setFaceData] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
-  // const [idData, setIdData] = useState(null); // Estado para datos de ID (si es necesario)
+  const [idData, setIdData] = useState(null); // Estado para datos de ID
   
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFaceValid, setIsFaceValid] = useState(false);
-  // const [isIdValid, setIsIdValid] = useState(false); // Estado para validación de ID
+  const [isIdValid, setIsIdValid] = useState(false); // Estado para validación de ID
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: null, message: '' }); // Cambiado success a null inicialmente
@@ -45,11 +46,11 @@ function RegistrationPage() {
     }
   };
   
-  // Placeholder para la función de manejo de verificación de ID
-  // const handleIdVerification = (idInfo, isValid) => {
-  //   setIdData(idInfo);
-  //   setIsIdValid(isValid);
-  // };
+  // Función para manejar la verificación de ID
+  const handleIdVerification = (idInfo, isValid) => {
+    setIdData(idInfo);
+    setIsIdValid(isValid);
+  };
 
   const nextStep = () => {
     if (currentStep === 1) {
@@ -62,15 +63,13 @@ function RegistrationPage() {
         return;
       }
     } else if (currentStep === 3 && !isFaceValid) {
-
         setSubmitResult({ success: false, message: 'Por favor complete la captura facial correctamente.' });
         return;
+    } else if (currentStep === 4 && !isIdValid) {
+        setSubmitResult({ success: false, message: 'Por favor complete la verificación de identidad correctamente.' });
+        return;
     }
-    // Añadir validación para el paso 3 si es necesario
-    // if (currentStep === 3 && !isIdValid) {
-    //     setSubmitResult({ success: false, message: 'Por favor complete la verificación de identidad.' });
-    //     return;
-    // }
+    
     setSubmitResult({ success: null, message: '' }); // Limpiar mensajes de error al avanzar
     setCurrentStep(prev => prev + 1);
   };
@@ -84,7 +83,7 @@ function RegistrationPage() {
     e.preventDefault();
     
     // Asegurarse de que todos los pasos requeridos son válidos antes de enviar
-    if (isFormValid && isFaceValid /* && isIdValid */ && formData.consent) {
+    if (isFormValid && isFaceValid && isIdValid && formData.consent) {
       setIsSubmitting(true);
       setSubmitResult({ success: null, message: '' });
       
@@ -93,7 +92,7 @@ function RegistrationPage() {
           ...formData,
           faceData,
           faceImage: capturedImage,
-          // idData, // Incluir datos de ID si existen
+          idData, // Incluir datos de ID
         };
         
         const response = await fetch('http://localhost:5000/api/visitors', {
@@ -133,7 +132,7 @@ function RegistrationPage() {
       let errorMessage = 'Por favor complete todos los pasos requeridos: ';
       if (!isFormValid || !formData.consent) errorMessage += 'Datos personales y consentimiento, ';
       if (!isFaceValid) errorMessage += 'Registro facial, ';
-      // if (!isIdValid) errorMessage += 'Verificación de identidad, ';
+      if (!isIdValid) errorMessage += 'Verificación de identidad, ';
       errorMessage = errorMessage.slice(0, -2) + '.'; // Remover la última coma y espacio
       
       setSubmitResult({ 
@@ -195,13 +194,11 @@ function RegistrationPage() {
 
         {currentStep === 4 && (
            <div className="step-container id-verification-section">
-            <h2>Paso 3: Verificación de Identidad</h2> {/* Título del paso */}
-            <p>Aquí iría el componente para cargar o capturar el documento de identidad.</p>
-            {/* <IDVerification onVerify={handleIdVerification} /> */}
-            {/* Placeholder hasta crear el componente */}
-            <p style={{padding: "20px", border: "1px dashed #ccc", textAlign: "center"}}>
-              (Componente de Verificación de ID pendiente)
-            </p>
+            <h2>Paso 4: Verificación de Identidad</h2> {/* Corregido el número del paso */}
+            <IDVerification 
+              onVerify={handleIdVerification}
+              formIdNumber={formData.idNumber}
+            />
           </div>
         )}
 
@@ -213,16 +210,16 @@ function RegistrationPage() {
             </button>
           )}
           
-          {currentStep < 4 && ( // Actualizado para el nuevo número total de pasos
+          {currentStep < 4 && (
             <button type="button" onClick={nextStep} disabled={isSubmitting}>
               Siguiente
             </button>
           )}
           
-          {currentStep === 4 && ( // Mostrar botón de envío en el último paso
+          {currentStep === 4 && (
             <button 
               type="submit" 
-              disabled={!isFormValid || !isFaceValid || !formData.consent /* || !isIdValid */ || isSubmitting}
+              disabled={!isFormValid || !isFaceValid || !isIdValid || !formData.consent || isSubmitting}
             >
               {isSubmitting ? 'Enviando...' : 'Completar Registro'}
             </button>

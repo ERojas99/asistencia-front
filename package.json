@@ -13,6 +13,7 @@
     "face-api.js": "^0.22.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tesseract.js": "^6.0.1",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
