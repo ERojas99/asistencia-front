@@ -6,6 +6,7 @@ function RegistrationForm({ formData, onChange }) {
   const initialFormData = {
     firstName: formData?.firstName || '',
     lastName: formData?.lastName || '',
+    idNumber: formData?.idNumber || '',  // Nuevo campo para cédula
     email: formData?.email || '',
     countryCode: formData?.countryCode || '+57',
     phoneNumber: formData?.phoneNumber || '',
@@ -83,6 +84,17 @@ function RegistrationForm({ formData, onChange }) {
       isValid = false;
     }
     
+    if (!data.idNumber.trim()) {
+      newErrors.idNumber = 'El número de cédula es obligatorio';
+      isValid = false;
+    } else if (!/^\d+$/.test(data.idNumber)) {
+      newErrors.idNumber = 'La cédula debe contener solo números';
+      isValid = false;
+    } else if (data.idNumber.length < 6 || data.idNumber.length > 10) {
+      newErrors.idNumber = 'La cédula debe tener entre 6 y 10 dígitos';
+      isValid = false;
+    }
+    
     if (!data.email.trim()) {
       newErrors.email = 'El correo electrónico es obligatorio';
       isValid = false;
@@ -104,8 +116,8 @@ function RegistrationForm({ formData, onChange }) {
     
     if (type === 'checkbox') {
       newValue = checked;
-    } else if (name === 'phoneNumber') {
-      // Eliminar todos los caracteres que no sean números
+    } else if (name === 'phoneNumber' || name === 'idNumber') {
+      // Eliminar todos los caracteres que no sean números para teléfono y cédula
       newValue = value.replace(/\D/g, '')
     } else {
       // Convertir a mayúsculas solo si es un campo de texto, NO email
@@ -153,6 +165,22 @@ function RegistrationForm({ formData, onChange }) {
           required
         />
         {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="idNumber">NÚMERO DE CÉDULA *</label>
+        <input
+          type="text"
+          id="idNumber"
+          name="idNumber"
+          value={localFormData.idNumber}
+          onChange={handleChange}
+          required
+          placeholder="Ej: 1002537927"
+          inputMode="numeric" 
+          pattern="[0-9]*"
+        />
+        {errors.idNumber && <span className="error-message">{errors.idNumber}</span>}
       </div>
       
       <div className="form-group">

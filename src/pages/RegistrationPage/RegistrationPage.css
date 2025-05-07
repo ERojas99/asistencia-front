@@ -268,3 +268,32 @@
         max-width: 150px;
     }
 }
+
+.step-indicator {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px 20px;
+  background-color: #6ec1e4;
+  border-radius: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: white;
+  width: fit-content;
+  transition: all 0.3s ease;
+}
+
+.step-indicator::before {
+  content: "📋";
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+/* Estilo responsivo */
+@media (max-width: 768px) {
+  .step-indicator {
+    font-size: 0.9em;
+    padding: 8px 15px;
+  }
+}
