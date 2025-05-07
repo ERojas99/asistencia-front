@@ -15,6 +15,8 @@ function RegistrationForm({ formData, onChange }) {
   
   const [localFormData, setLocalFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
   
   const countryCodes = [
     { code: '+57', name: 'COL' },
@@ -33,6 +35,39 @@ function RegistrationForm({ formData, onChange }) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
+
+  const checkEmailExists = async (email) => {
+    if (!email || !validateEmail(email)) return;
+    
+    setIsCheckingEmail(true);
+    try {
+      const response = await fetch(`http://localhost:5000/api/visitors/check-email/${email.toLowerCase()}`);
+      const result = await response.json();
+      setEmailExists(result.exists);
+      
+      if (result.exists) {
+        setErrors(prev => ({
+          ...prev,
+          email: 'Este correo ya está registrado.'
+        }));
+      }
+    } catch (error) {
+      console.error('Error al verificar el correo:', error);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
+  // Debounce para no hacer demasiadas peticiones mientras el usuario escribe
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localFormData.email && validateEmail(localFormData.email)) {
+        checkEmailExists(localFormData.email);
+      }
+    }, 500); // Esperar 500ms después de que el usuario deje de escribir
+    
+    return () => clearTimeout(timer);
+  }, [localFormData.email]);
 
   const validateForm = useCallback((data) => {
     const newErrors = {};
@@ -54,11 +89,14 @@ function RegistrationForm({ formData, onChange }) {
     } else if (!validateEmail(data.email)) {
       newErrors.email = 'FORMATO DE CORREO ELECTRÓNICO INVÁLIDO';
       isValid = false;
+    } else if (emailExists) {
+      newErrors.email = 'Este correo ya está registrado.';
+      isValid = false;
     }
     
     setErrors(newErrors);
     return isValid;
-  }, []);
+  }, [emailExists]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -70,8 +108,8 @@ function RegistrationForm({ formData, onChange }) {
       // Eliminar todos los caracteres que no sean números
       newValue = value.replace(/\D/g, '')
     } else {
-      // Convertir a mayúsculas si es un campo de texto o email
-      newValue = type === 'text' || type === 'email' ? value.toUpperCase() : value;
+      // Convertir a mayúsculas solo si es un campo de texto, NO email
+      newValue = type === 'text' ? value.toUpperCase() : value;
     }
     
     const newFormData = { ...localFormData, [name]: newValue };
@@ -126,7 +164,9 @@ function RegistrationForm({ formData, onChange }) {
           value={formData.email}
           onChange={handleChange}
           required
+          className={emailExists ? 'input-error' : ''}
         />
+        {isCheckingEmail && <span className="checking-message">Verificando correo...</span>}
         {errors.email && <span className="error-message">{errors.email}</span>}
       </div>
       

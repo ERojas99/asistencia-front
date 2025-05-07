@@ -61,6 +61,7 @@ function RegistrationPage() {
         return;
       }
     } else if (currentStep === 3 && !isFaceValid) {
+
         setSubmitResult({ success: false, message: 'Por favor complete la captura facial correctamente.' });
         return;
     }
@@ -95,10 +96,6 @@ function RegistrationPage() {
         };
         
         const response = await fetch('http://localhost:5000/api/visitors', {
-
-        // Enviar datos al backend
-        //const response = await fetch('https://2364-45-171-182-198.ngrok-free.app/api/visitors', {
-
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +112,7 @@ function RegistrationPage() {
           });
           setTimeout(() => {
             window.location.reload();
-          }, 3000); // Aumentado a 3 segundos
+          }, 1000); // Aumentado a 3 segundos
         } else {
           setSubmitResult({ 
             success: false, 
