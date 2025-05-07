@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
 import ProgressBar from '../../components/ProgressBar/ProgressBar';
+import FaceWarning from '../../pages/FaceWarning/FaceWarning';
 import logo from '../../assets/logoANDICOM.png'; // Importar el logo
 import './RegistrationPage.css';
 
@@ -28,7 +29,7 @@ function RegistrationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: null, message: '' }); // Cambiado success a null inicialmente
   
-  const totalSteps = 3; // Definir el número total de pasos aquí
+  const totalSteps = 4; // Actualizado para incluir el paso de advertencias
 
   const handleFormChange = (newFormData, isValid) => {
     setFormData(newFormData);
@@ -49,30 +50,18 @@ function RegistrationPage() {
   //   setIsIdValid(isValid);
   // };
 
-  const nextStep = async () => {
-    if (currentStep === 1 && !isFormValid) {
+  const nextStep = () => {
+    if (currentStep === 1) {
+      if (!isFormValid) {
         setSubmitResult({ success: false, message: 'Por favor complete todos los campos obligatorios del formulario.' });
         return;
-    }
-    if (currentStep === 1 && !formData.consent) {
+      }
+      if (!formData.consent) {
         setSubmitResult({ success: false, message: 'Debe aceptar el tratamiento de datos para continuar.' });
         return;
-    }
-    // Verificación de correo duplicado antes de avanzar del paso 1 al 2
-    if (currentStep === 1) {
-        try {
-            const response = await fetch(`http://localhost:5000/api/visitors/check-email/${formData.email.toLowerCase()}`);
-            const result = await response.json();
-            if (result.exists) {
-                setSubmitResult({ success: false, message: 'El correo ya está registrado. Por favor use otro correo.' });
-                return;
-            }
-        } catch (error) {
-            setSubmitResult({ success: false, message: 'Error al verificar el correo. Intente nuevamente.' });
-            return;
-        }
-    }
-    if (currentStep === 2 && !isFaceValid) {
+      }
+    } else if (currentStep === 3 && !isFaceValid) {
+
         setSubmitResult({ success: false, message: 'Por favor complete la captura facial correctamente.' });
         return;
     }
@@ -178,7 +167,7 @@ function RegistrationPage() {
         {/* Renderizado condicional basado en el paso actual */}
         {currentStep === 1 && (
           <div className="step-container form-section">
-            <h2>Paso 1: Datos Personales</h2> {/* Título del paso */}
+            <h2>Paso 1: Datos Personales</h2>
             <RegistrationForm 
               formData={formData} 
               onChange={handleFormChange} 
@@ -187,17 +176,23 @@ function RegistrationPage() {
         )}
         
         {currentStep === 2 && (
-          <div className="step-container face-recognition-section">
-             <h2>Paso 2: Reconocimiento Facial</h2> {/* Título del paso */}
-             {/* Asegúrate de pasar la imagen capturada si quieres mostrarla */}
-            <FaceRecognition 
-              onFaceCapture={handleFaceCapture}
-              initialCapturedImage={capturedImage} // Pasa la imagen si ya fue capturada
-            />
+          <div className="step-container warning-section">
+            <h2>Paso 2: Advertencias de Reconocimiento Facial</h2>
+            <FaceWarning />
           </div>
         )}
 
         {currentStep === 3 && (
+          <div className="step-container face-recognition-section">
+            <h2>Paso 3: Reconocimiento Facial</h2>
+            <FaceRecognition 
+              onFaceCapture={handleFaceCapture}
+              initialCapturedImage={capturedImage}
+            />
+          </div>
+        )}
+
+        {currentStep === 4 && (
            <div className="step-container id-verification-section">
             <h2>Paso 3: Verificación de Identidad</h2> {/* Título del paso */}
             <p>Aquí iría el componente para cargar o capturar el documento de identidad.</p>
@@ -217,13 +212,13 @@ function RegistrationPage() {
             </button>
           )}
           
-          {currentStep < 3 && ( // Cambiado de 3 a 2 si IDVerification no está listo
+          {currentStep < 4 && ( // Actualizado para el nuevo número total de pasos
             <button type="button" onClick={nextStep} disabled={isSubmitting}>
               Siguiente
             </button>
           )}
           
-          {currentStep === 3 && ( // Mostrar botón de envío en el último paso
+          {currentStep === 4 && ( // Mostrar botón de envío en el último paso
             <button 
               type="submit" 
               disabled={!isFormValid || !isFaceValid || !formData.consent /* || !isIdValid */ || isSubmitting}
