@@ -49,14 +49,28 @@ function RegistrationPage() {
   //   setIsIdValid(isValid);
   // };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep === 1 && !isFormValid) {
         setSubmitResult({ success: false, message: 'Por favor complete todos los campos obligatorios del formulario.' });
         return;
     }
-     if (currentStep === 1 && !formData.consent) {
+    if (currentStep === 1 && !formData.consent) {
         setSubmitResult({ success: false, message: 'Debe aceptar el tratamiento de datos para continuar.' });
         return;
+    }
+    // Verificación de correo duplicado antes de avanzar del paso 1 al 2
+    if (currentStep === 1) {
+        try {
+            const response = await fetch(`http://localhost:5000/api/visitors/check-email/${formData.email.toLowerCase()}`);
+            const result = await response.json();
+            if (result.exists) {
+                setSubmitResult({ success: false, message: 'El correo ya está registrado. Por favor use otro correo.' });
+                return;
+            }
+        } catch (error) {
+            setSubmitResult({ success: false, message: 'Error al verificar el correo. Intente nuevamente.' });
+            return;
+        }
     }
     if (currentStep === 2 && !isFaceValid) {
         setSubmitResult({ success: false, message: 'Por favor complete la captura facial correctamente.' });
@@ -93,10 +107,6 @@ function RegistrationPage() {
         };
         
         const response = await fetch('http://localhost:5000/api/visitors', {
-
-        // Enviar datos al backend
-        //const response = await fetch('https://2364-45-171-182-198.ngrok-free.app/api/visitors', {
-
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -113,7 +123,7 @@ function RegistrationPage() {
           });
           setTimeout(() => {
             window.location.reload();
-          }, 3000); // Aumentado a 3 segundos
+          }, 1000); // Aumentado a 3 segundos
         } else {
           setSubmitResult({ 
             success: false, 

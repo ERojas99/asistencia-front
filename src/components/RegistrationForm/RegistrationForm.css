@@ -93,6 +93,18 @@
   margin-top: 4px;
 }
 
+.checking-message {
+  color: #6c757d;
+  font-size: 0.6em;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.input-error {
+  border-color: #d9534f !important;
+  background-color: #fff8f8;
+}
+
 @media (max-width: 380px) {
   .phone-group .phone-input-container {
     flex-direction: column;

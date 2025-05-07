@@ -228,7 +228,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
-    text-fill-color: transparent; /* Para navegadores estándar */
+    -webkit-text-fill-color: transparent; /* Para navegadores estándar */
     /* Asegúrate de que el texto sea visible si el degradado no se aplica */
     color: #6EC1E4; /* Fallback color */
 }
