@@ -95,7 +95,7 @@ function RegistrationPage() {
           idData, // Incluir datos de ID
         };
         
-        const response = await fetch('http://localhost:5000/api/visitors', {
+        const response = await fetch('https://asistencia-back-evtb.onrender.com/api/visitors', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
