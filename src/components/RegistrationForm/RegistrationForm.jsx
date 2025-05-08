@@ -42,7 +42,7 @@ function RegistrationForm({ formData, onChange }) {
     
     setIsCheckingEmail(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/visitors/check-email/${email.toLowerCase()}`);
+      const response = await fetch(`https://asistencia-back-evtb.onrender.com/api/visitors/check-email/${email.toLowerCase()}`);
       const result = await response.json();
       setEmailExists(result.exists);
       
