@@ -297,3 +297,86 @@
     padding: 8px 15px;
   }
 }
+
+/* Estilos para la página de agradecimiento */
+.thank-you-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.thank-you-content {
+  max-width: 600px;
+  text-align: center;
+  padding: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.thank-you-logo {
+  max-width: 200px;
+  margin-bottom: 30px;
+}
+
+.thank-you-content h1 {
+  margin-bottom: 20px;
+  color: #6EC1E4;
+  font-size: 2em;
+}
+
+.thank-you-content p {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.countdown {
+  font-weight: bold;
+  color: #30c645;
+  font-size: 1.3em;
+}
+
+.redirect-button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background-color: #6EC1E4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.redirect-button:hover {
+  background-color: #09768D;
+}
+
+/* Responsive para la página de agradecimiento */
+@media (max-width: 768px) {
+  .thank-you-content {
+    padding: 30px;
+  }
+  
+  .thank-you-content h1 {
+    font-size: 1.6em;
+  }
+  
+  .thank-you-content p {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .thank-you-content {
+    padding: 20px;
+  }
+  
+  .thank-you-logo {
+    max-width: 150px;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
 import ProgressBar from '../../components/ProgressBar/ProgressBar';
@@ -79,6 +79,22 @@ function RegistrationPage() {
     setSubmitResult({ success: null, message: '' }); // Limpiar mensajes al retroceder
   };
 
+  const [showThankYouPage, setShowThankYouPage] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(3);
+  
+  // Efecto para la redirección después de mostrar la página de agradecimiento
+  useEffect(() => {
+    let timer;
+    if (showThankYouPage && redirectCountdown > 0) {
+      timer = setTimeout(() => {
+        setRedirectCountdown(prev => prev - 1);
+      }, 1000);
+    } else if (showThankYouPage && redirectCountdown === 0) {
+      window.location.href = 'https://andicom.co';
+    }
+    return () => clearTimeout(timer);
+  }, [showThankYouPage, redirectCountdown]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -110,9 +126,8 @@ function RegistrationPage() {
             success: true, 
             message: '¡Registro completado con éxito!' 
           });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000); // Aumentado a 3 segundos
+          // Mostrar la página de agradecimiento en lugar de recargar
+          setShowThankYouPage(true);
         } else {
           setSubmitResult({ 
             success: false, 
@@ -141,6 +156,29 @@ function RegistrationPage() {
       });
     }
   };
+  
+  // Componente de página de agradecimiento
+  const ThankYouPage = () => (
+    <div className="thank-you-page">
+      <div className="thank-you-content">
+        <img src={logo} alt="Logo ANDICOM" className="thank-you-logo" />
+        <h1>¡Gracias por su registro!</h1>
+        <p>Su información ha sido registrada correctamente.</p>
+        <p>Será redirigido a la página de ANDICOM en <span className="countdown">{redirectCountdown}</span> segundos...</p>
+        <button 
+          onClick={() => window.location.href = 'https://andicom.co'} 
+          className="redirect-button"
+        >
+          Ir a ANDICOM ahora
+        </button>
+      </div>
+    </div>
+  );
+  
+  // Si se debe mostrar la página de agradecimiento, renderizarla
+  if (showThankYouPage) {
+    return <ThankYouPage />;
+  }
   
   return (
     <div className="registration-page">
