@@ -597,31 +597,67 @@
 }
 
 /* Estilo para las etiquetas de captura */
+/*
 .capture-steps {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 10px;
   margin: 15px 0;
 }
 
-.step-indicator {
-  background-color: #e0f2e0;
-  color: #2c7a2c;
-  padding: 8px 15px;
-  border-radius: 5px;
+.steps-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}*/
+.auto-capture-toggle {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auto-capture-toggle label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
   font-weight: bold;
-  min-width: 100px;
-  text-align: center;
+}
+
+.auto-capture-toggle input {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+.steps-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.capture-steps {
+  margin: 15px 0;
+}
+
+.step-indicator {
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
 .step-indicator.active {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #4a9d69;
+  border-color: #1890ff;
+  font-weight: bold;
 }
 
 .step-indicator.completed {
-  background-color: #2c7a2c;
-  color: white;
+  background-color: #3d882e;
+  border-color: #357f0f;
 }
 
 /* Estilo para la cuadrícula de imágenes capturadas */
