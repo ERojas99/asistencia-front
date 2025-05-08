@@ -30,6 +30,11 @@ function FaceRecognition({ onFaceCapture }) {
   const [faceAngle, setFaceAngle] = useState(0); // Ángulo estimado de rotación del rostro
   const [livenessVerified, setLivenessVerified] = useState(false);
   
+  // Estados para la captura automática
+  const [correctPoseTime, setCorrectPoseTime] = useState(0);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureCountdown, setCaptureCountdown] = useState(0);
+  
   // Cargar modelos de face-api.js
   useEffect(() => {
     const loadModels = async () => {
@@ -127,10 +132,6 @@ function FaceRecognition({ onFaceCapture }) {
       // Calcular la diferencia en el eje X entre los ojos
       const eyeDistanceX = rightEyeCenter.x - leftEyeCenter.x;
       
-      // Calcular el ángulo basado en la proporción de la distancia entre los ojos
-      // Cuando el rostro está de frente, la distancia es máxima
-      // Cuando gira, la distancia se reduce
-      
       // Obtener la nariz para referencia adicional
       const nose = landmarks.getNose();
       const noseTip = nose[3]; // Punta de la nariz
@@ -172,6 +173,36 @@ function FaceRecognition({ onFaceCapture }) {
         return false;
     }
   };
+  
+  // Efecto para manejar la captura automática cuando se detecta la posición correcta
+  useEffect(() => {
+    if (captureStep > 0 && captureStep < 4 && isHuman && isAdult && faceEmbeddings && isCameraActive) {
+      if (verifyAngleForStep(faceAngle, captureStep)) {
+        // Si la posición es correcta, capturar inmediatamente
+        console.log('Posición correcta detectada, capturando inmediatamente');
+        handleCapture();
+      }
+    }
+  }, [faceAngle, captureStep, isHuman, isAdult, faceEmbeddings, isCameraActive]);
+  
+  // Eliminar o simplificar el efecto de cuenta regresiva ya que no lo necesitamos
+  useEffect(() => {
+    let countdownTimer;
+    
+    if (isCapturing && captureCountdown > 0) {
+      console.log(`Cuenta regresiva: ${captureCountdown}`);
+      countdownTimer = setTimeout(() => {
+        setCaptureCountdown(prev => prev - 1);
+      }, 1000);
+    } else if (isCapturing && captureCountdown === 0) {
+      // Cuando la cuenta regresiva llega a 0, capturar automáticamente
+      console.log('Ejecutando captura automática');
+      handleCapture();
+      setIsCapturing(false);
+    }
+    
+    return () => clearTimeout(countdownTimer);
+  }, [isCapturing, captureCountdown]);
   
   // Procesar el video para detección facial
   const handleVideoPlay = () => {
@@ -244,7 +275,8 @@ function FaceRecognition({ onFaceCapture }) {
             
             // Mostrar instrucción según el paso actual
             if (captureStep > 0 && captureStep < 4) {
-              ctx.fillStyle = verifyAngleForStep(angle, captureStep) ? 'green' : 'orange';
+              const isCorrectAngle = verifyAngleForStep(angle, captureStep);
+              ctx.fillStyle = isCorrectAngle ? 'green' : 'orange';
               let stepText = '';
               let angleText = '';
               
@@ -261,6 +293,23 @@ function FaceRecognition({ onFaceCapture }) {
               
               ctx.fillText(stepText, 10, 75);
               ctx.fillText(angleText, 10, 100);
+              
+              // Mostrar barra de progreso para la captura automática
+              if (isCorrectAngle) {
+                const progressWidth = (correctPoseTime / 2000) * 100;
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+                ctx.fillRect(10, canvas.height - 30, progressWidth * (canvas.width - 20) / 100, 20);
+                ctx.strokeStyle = 'green';
+                ctx.strokeRect(10, canvas.height - 30, canvas.width - 20, 20);
+                
+                // Mostrar cuenta regresiva si está activa
+                if (isCapturing && captureCountdown > 0) {
+                  ctx.font = '24px Arial';
+                  ctx.fillStyle = 'white';
+                  ctx.textAlign = 'center';
+                  ctx.fillText(`Capturando en ${captureCountdown}...`, canvas.width / 2, canvas.height - 40);
+                }
+              }
             }
             
             if (age < 18) {
@@ -268,6 +317,22 @@ function FaceRecognition({ onFaceCapture }) {
               onFaceCapture(null, false);
             } else if (captureStep === 0) {
               setFeedback(`Rostro válido detectado. Edad: ${age} años. Presione "Iniciar Verificación" para comenzar el proceso.`);
+            } else if (captureStep > 0 && captureStep < 4) {
+              // Actualizar feedback con instrucciones para la captura automática
+              const isCorrectAngle = verifyAngleForStep(angle, captureStep);
+              if (isCorrectAngle) {
+                if (isCapturing) {
+                  setFeedback(`Mantenga la posición. Capturando en ${captureCountdown} segundos...`);
+                } else {
+                  setFeedback(`Posición correcta. Mantenga esta posición para capturar automáticamente...`);
+                }
+              } else {
+                setFeedback(`Paso ${captureStep}: ${
+                  captureStep === 1 ? 'Mire al frente' : 
+                  captureStep === 2 ? 'Gire lentamente su rostro hacia la izquierda' : 
+                  'Gire lentamente su rostro hacia la derecha'
+                }`);
+              }
             }
           } else {
             setIsHuman(false);
@@ -309,7 +374,7 @@ function FaceRecognition({ onFaceCapture }) {
   const startLivenessCheck = () => {
     if (isHuman && isAdult && faceEmbeddings && isCameraActive) {
       setCaptureStep(1);
-      setFeedback('Paso 1: Mantenga su rostro mirando al frente y presione "Capturar" cuando esté listo');
+      setFeedback('Paso 1: Mantenga su rostro mirando al frente para la captura automática');
       
       // Reiniciar los datos de captura
       setCapturedImages({
@@ -325,6 +390,9 @@ function FaceRecognition({ onFaceCapture }) {
       });
       
       setLivenessVerified(false);
+      setCorrectPoseTime(0);
+      setIsCapturing(false);
+      setCaptureCountdown(0);
     } else {
       setFeedback('No se puede iniciar la verificación. Asegúrese de que su rostro sea visible y sea mayor de 18 años.');
     }
@@ -355,13 +423,21 @@ function FaceRecognition({ onFaceCapture }) {
       setCapturedImages(prev => ({ ...prev, frontal: imageData }));
       setFaceEmbeddingsMulti(prev => ({ ...prev, frontal: faceEmbeddings }));
       setCaptureStep(2);
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda y presione "Capturar"');
+      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda para la captura automática');
+      // Reiniciar los contadores para la siguiente captura
+      setCorrectPoseTime(0);
+      setIsCapturing(false);
+      setCaptureCountdown(0);
     } else if (captureStep === 2) {
       // Captura derecha
       setCapturedImages(prev => ({ ...prev, right: imageData }));
       setFaceEmbeddingsMulti(prev => ({ ...prev, right: faceEmbeddings }));
       setCaptureStep(3);
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha y presione "Capturar"');
+      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha para la captura automática');
+      // Reiniciar los contadores para la siguiente captura
+      setCorrectPoseTime(0);
+      setIsCapturing(false);
+      setCaptureCountdown(0);
     } else if (captureStep === 3) {
       // Captura izquierda
       setCapturedImages(prev => ({ ...prev, left: imageData }));
@@ -406,6 +482,9 @@ function FaceRecognition({ onFaceCapture }) {
       left: null
     });
     setLivenessVerified(false);
+    setCorrectPoseTime(0);
+    setIsCapturing(false);
+    setCaptureCountdown(0);
     setFeedback('Proceso de verificación reiniciado. Presione "Iniciar Verificación" para comenzar de nuevo.');
   };
 
@@ -502,6 +581,15 @@ function FaceRecognition({ onFaceCapture }) {
           </button>
         )}
         
+        {isCameraActive && (
+          <button 
+            className="camera-button"
+            onClick={toggleCamera}
+          >
+            Desactivar Cámara
+          </button>
+        )}
+        
         {captureStep === 0 && (
           <button 
             className="capture-button" 
@@ -512,24 +600,7 @@ function FaceRecognition({ onFaceCapture }) {
           </button>
         )}
         
-        {captureStep > 0 && captureStep < 4 && (
-          <button 
-            className="capture-button" 
-            onClick={handleCapture}
-            disabled={!isHuman || !isAdult || !faceEmbeddings || !isCameraActive || !verifyAngleForStep(faceAngle, captureStep)}
-          >
-            Capturar {captureStep === 1 ? ' ' : captureStep === 2 ? ' ' : ' '}
-          </button>
-        )}
-        
-        {/* {captureStep > 0 && (
-          <button 
-            className="reset-button capture-button" 
-            onClick={resetCapture}
-          >
-            Reiniciar
-          </button>
-        )} */}
+        {/* No hay botón de captura manual - la captura es automática */}
       </div>
     </div>
   );

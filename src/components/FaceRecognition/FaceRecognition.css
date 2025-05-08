@@ -421,6 +421,223 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 10;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.feedback-message {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.status-indicator {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.status-indicator.success {
+  background-color: rgba(0, 255, 0, 0.2);
+  color: #006400;
+  border: 1px solid #006400;
+}
+
+.status-indicator.loading {
+  background-color: rgba(255, 165, 0, 0.2);
+  color: #8B4513;
+  border: 1px solid #8B4513;
+}
+
+.status-indicator.info {
+  background-color: rgba(0, 0, 255, 0.2);
+  color: #00008B;
+  border: 1px solid #00008B;
+}
+
+.capture-steps {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 640px;
+}
+
+.step-indicator {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  margin: 0 5px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  position: relative;
+}
+
+.step-indicator.active {
+  background-color: rgba(0, 0, 255, 0.2);
+  font-weight: bold;
+}
+
+.step-indicator.completed {
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+.step-indicator.active::after {
+  content: '▼';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00008B;
+}
+
+.status-indicator.image-saved {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.face-recognition {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Añadir media query para dispositivos móviles */
+@media (max-width: 768px) {
+  .face-recognition {
+    max-width: 100%;
+    padding: 10px;
+    margin: 0 auto;
+    width: 90%;
+  }
+  
+  .video-container {
+    height: 250px; /* Reducir altura en móviles */
+  }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .face-recognition {
+    width: 95%;
+    padding: 8px;
+  }
+  
+  .video-container {
+    height: 220px; /* Aún más pequeño para pantallas muy pequeñas */
+  }
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: #000;
+}
+
+.video-container video,
+.video-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feedback-container {
+  width: 100%;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.status-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.camera-button,
+.capture-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.face-recognition-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #0D1B35; /* Color de la paleta ANDICOM */
+  border-radius: 8px;
+  background-color: #111B34; /* Color de la paleta ANDICOM */
+  max-width: 500px; /* O el ancho que prefieras */
+  margin: 20px auto;
+}
+
+.video-container {
+  position: relative;
+  width: 100%; /* O un ancho fijo como 480px */
+  max-width: 480px;
+  margin-bottom: 15px;
+  border: 2px solid #6EC1E4; /* Borde con color primario ANDICOM */
+  border-radius: 6px;
+  overflow: hidden; /* Para que el canvas no se salga si es más grande */
+}
+
+.face-recognition-container video,
+.face-recognition-container canvas {
+  display: block; /* Para quitar espacio extra debajo */
+  width: 100%;
+  height: auto; /* Mantiene la proporción */
+  border-radius: 4px; /* Ligeramente redondeado si el contenedor ya lo está */
+}
+
+.face-recognition-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .face-recognition-container .feedback-text {
