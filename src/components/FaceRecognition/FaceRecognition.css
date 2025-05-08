@@ -444,7 +444,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
-  text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
   /* Fallback por si el gradiente no es soportado, aunque el fondo del contenedor ya da contraste */
   color: #07E7F9; 
   border-color: #07E7F9; /* Borde cian para éxito */

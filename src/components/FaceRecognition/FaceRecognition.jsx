@@ -183,9 +183,9 @@ function FaceRecognition({ onFaceCapture }) {
     if (captureStep === 1) {
       setFeedback('Paso 1: Mantenga su rostro mirando al frente...');
     } else if (captureStep === 2) {
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la derecha...');
+      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda...');
     } else if (captureStep === 3) {
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la izquierda...');
+      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha...');
     } else {
       setFeedback('Analizando rostro...');
     }
@@ -252,10 +252,10 @@ function FaceRecognition({ onFaceCapture }) {
                 stepText = 'Mire al frente';
                 angleText = Math.abs(angle) < 15 ? '✓' : 'Alinee su rostro';
               } else if (captureStep === 2) {
-                stepText = 'Gire a la derecha';
+                stepText = 'Gire a la izquierda';
                 angleText = angle > 20 ? '✓' : 'Gire más';
               } else if (captureStep === 3) {
-                stepText = 'Gire a la izquierda';
+                stepText = 'Gire a la derecha';
                 angleText = angle < -20 ? '✓' : 'Gire más';
               }
               
@@ -341,8 +341,8 @@ function FaceRecognition({ onFaceCapture }) {
     if (!verifyAngleForStep(faceAngle, captureStep)) {
       setFeedback(`Posición incorrecta. Por favor, ${
         captureStep === 1 ? 'mire al frente' : 
-        captureStep === 2 ? 'gire más a la derecha' : 
-        'gire más a la izquierda'
+        captureStep === 2 ? 'gire más a la izquierda' : 
+        'gire más a la derecha'
       } antes de capturar.`);
       return;
     }
@@ -355,13 +355,13 @@ function FaceRecognition({ onFaceCapture }) {
       setCapturedImages(prev => ({ ...prev, frontal: imageData }));
       setFaceEmbeddingsMulti(prev => ({ ...prev, frontal: faceEmbeddings }));
       setCaptureStep(2);
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la derecha y presione "Capturar"');
+      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda y presione "Capturar"');
     } else if (captureStep === 2) {
       // Captura derecha
       setCapturedImages(prev => ({ ...prev, right: imageData }));
       setFaceEmbeddingsMulti(prev => ({ ...prev, right: faceEmbeddings }));
       setCaptureStep(3);
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la izquierda y presione "Capturar"');
+      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha y presione "Capturar"');
     } else if (captureStep === 3) {
       // Captura izquierda
       setCapturedImages(prev => ({ ...prev, left: imageData }));
@@ -421,12 +421,12 @@ function FaceRecognition({ onFaceCapture }) {
               <span className="capture-label">Frontal</span>
             </div>
             <div className="captured-image-container">
-              <img src={capturedImages.right} alt="Rostro derecha" className="captured-image" />
-              <span className="capture-label">Derecha</span>
+              <img src={capturedImages.right} alt="Rostro Izquierda" className="captured-image" />
+              <span className="capture-label">Izquierda</span>
             </div>
             <div className="captured-image-container">
-              <img src={capturedImages.left} alt="Rostro izquierda" className="captured-image" />
-              <span className="capture-label">Izquierda</span>
+              <img src={capturedImages.left} alt="Rostro Derecha" className="captured-image" />
+              <span className="capture-label">Derecha</span>
             </div>
           </div>
         ) : (
@@ -482,23 +482,25 @@ function FaceRecognition({ onFaceCapture }) {
               Frontal
             </div>
             <div className={`step-indicator ${captureStep >= 2 ? 'active' : ''} ${captureStep > 2 ? 'completed' : ''}`}>
-              Derecha
+              Izquierda
             </div>
             <div className={`step-indicator ${captureStep >= 3 ? 'active' : ''} ${captureStep > 3 ? 'completed' : ''}`}>
-              Izquierda
+              Derecha
             </div>
           </div>
         )}
       </div>
       
       <div className="button-container">
-        <button 
-          className="camera-button"
-          onClick={toggleCamera}
-          disabled={!isModelLoaded}
-        >
-          {isCameraActive ? 'Desactivar Cámara' : 'Activar Cámara'}
-        </button>
+        {!isCameraActive && (
+          <button 
+            className="camera-button"
+            onClick={toggleCamera}
+            disabled={!isModelLoaded}
+          >
+            Activar Cámara
+          </button>
+        )}
         
         {captureStep === 0 && (
           <button 
@@ -516,7 +518,7 @@ function FaceRecognition({ onFaceCapture }) {
             onClick={handleCapture}
             disabled={!isHuman || !isAdult || !faceEmbeddings || !isCameraActive || !verifyAngleForStep(faceAngle, captureStep)}
           >
-            Capturar {captureStep === 1 ? 'Frontal' : captureStep === 2 ? 'Derecha' : 'Izquierda'}
+            Capturar {captureStep === 1 ? ' ' : captureStep === 2 ? ' ' : ' '}
           </button>
         )}
         
