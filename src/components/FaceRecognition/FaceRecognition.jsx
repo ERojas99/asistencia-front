@@ -516,6 +516,7 @@ function FaceRecognition({ onFaceCapture }) {
               autoPlay 
               muted 
               playsInline
+              className="mirror-mode"
             />
             <canvas ref={canvasRef} className="overlay-canvas" />
           </>

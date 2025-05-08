@@ -883,3 +883,12 @@
   margin: 5px;
   display: inline-block;
 }
+
+/* Estilo para el efecto espejo de la cámara */
+.mirror-mode {
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -ms-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+}
