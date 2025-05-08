@@ -316,7 +316,7 @@ function FaceRecognition({ onFaceCapture }) {
               setFeedback(`Edad detectada: ${age} años. Se requiere ser mayor de 18 años.`);
               onFaceCapture(null, false);
             } else if (captureStep === 0) {
-              setFeedback(`Rostro válido detectado. Edad: ${age} años. Presione "Iniciar Verificación" para comenzar el proceso.`);
+              setFeedback(`Rostro válido detectado. Edad: ${age} años.`);
             } else if (captureStep > 0 && captureStep < 4) {
               // Actualizar feedback con instrucciones para la captura automática
               const isCorrectAngle = verifyAngleForStep(angle, captureStep);
