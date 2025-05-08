@@ -581,14 +581,14 @@ function FaceRecognition({ onFaceCapture }) {
           </button>
         )}
         
-        {isCameraActive && (
+        {/* {isCameraActive && (
           <button 
             className="camera-button"
             onClick={toggleCamera}
           >
             Desactivar Cámara
           </button>
-        )}
+        )} */}
         
         {captureStep === 0 && (
           <button 
