@@ -559,13 +559,13 @@ function FaceRecognition({ onFaceCapture }) {
         {captureStep > 0 && captureStep < 4 && (
           <div className="capture-steps">
             <div className={`step-indicator ${captureStep >= 1 ? 'active' : ''} ${captureStep > 1 ? 'completed' : ''}`}>
-              Frontal
+              Rostro Frontal
             </div>
             <div className={`step-indicator ${captureStep >= 2 ? 'active' : ''} ${captureStep > 2 ? 'completed' : ''}`}>
-              Izquierda
+              Gire su rostro a la Izquierda
             </div>
             <div className={`step-indicator ${captureStep >= 3 ? 'active' : ''} ${captureStep > 3 ? 'completed' : ''}`}>
-              Derecha
+              Gire su rostro a la Derecha
             </div>
           </div>
         )}
