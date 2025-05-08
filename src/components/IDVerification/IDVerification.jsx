@@ -16,7 +16,7 @@ function IDVerification({ onVerify, formIdNumber }) {
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          facingMode: 'environment' // Usar cámara trasera por defecto
+          facingMode: { exact: 'environment' } // Forzar el uso de la cámara trasera
         }
       };
       
@@ -30,7 +30,21 @@ function IDVerification({ onVerify, formIdNumber }) {
       
     } catch (error) {
       console.error('Error al acceder a la cámara:', error);
-      alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+      // Si falla al intentar usar la cámara trasera, intentar con la configuración por defecto
+      try {
+        const fallbackConstraints = {
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+        setCameraStream(stream);
+        setIsCameraActive(true);
+      } catch (fallbackError) {
+        console.error('Error al acceder a la cámara (fallback):', fallbackError);
+        alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+      }
     }
   };
   
