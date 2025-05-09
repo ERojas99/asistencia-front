@@ -164,3 +164,34 @@
   .form-group.consent-group label {
     font-size: 0.8rem;
   }
+
+.email-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.spinner-container {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #30c645;  /* Cambiado a verde para coincidir con el tema */
+  animation: spin 1s ease-in-out infinite;
+}
+
+.form-group input[type="email"] {
+  padding-right: 35px;  /* Espacio para el spinner */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
