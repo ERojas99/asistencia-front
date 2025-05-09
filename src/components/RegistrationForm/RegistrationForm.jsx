@@ -108,7 +108,7 @@ function RegistrationForm({ formData, onChange }) {
     
     setErrors(newErrors);
     return isValid;
-  }, [emailExists]);
+  }, [emailExists]);  // Importante: emailExists está en las dependencias
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -136,6 +136,13 @@ function RegistrationForm({ formData, onChange }) {
   useEffect(() => {
     validateForm(localFormData);
   }, [localFormData, validateForm]);
+  
+  // Actualizar el onChange para que valide inmediatamente cuando cambia emailExists
+  useEffect(() => {
+    if (onChange) {
+      onChange(localFormData, validateForm(localFormData));
+    }
+  }, [emailExists, localFormData, onChange, validateForm]);
 
   return (
     <div className="registration-form">
@@ -185,15 +192,23 @@ function RegistrationForm({ formData, onChange }) {
       
       <div className="form-group">
         <label htmlFor="email">CORREO ELECTRÓNICO *</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className={emailExists ? 'input-error' : ''}
-        />
+        <div className="email-input-container">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className={emailExists ? 'input-error' : ''}
+            disabled={isCheckingEmail}
+          />
+          {isCheckingEmail && (
+            <div className="spinner-container">
+              <div className="spinner"></div>
+            </div>
+          )}
+        </div>
         {isCheckingEmail && <span className="checking-message">Verificando correo...</span>}
         {errors.email && <span className="error-message">{errors.email}</span>}
       </div>
