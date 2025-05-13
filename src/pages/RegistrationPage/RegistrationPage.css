@@ -2,7 +2,7 @@
 .registration-page {
   min-height: 100vh;
   height: 100vh;
-  width: 100%;
+  width: 100vw; /* Cambiado a 100vw para asegurar que ocupe todo el ancho del viewport */
   background-color: #081f3c;
   display: flex;
   flex-direction: column;
