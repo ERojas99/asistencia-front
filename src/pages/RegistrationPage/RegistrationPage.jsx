@@ -440,6 +440,27 @@ function RegistrationPage() {
               onFaceCapture={handleFaceCapture}
               initialCapturedImage={capturedImage}
             />
+            <div className="navigation-buttons">
+              {currentStep > 1 && (
+                <button 
+                  type="button" 
+                  onClick={prevStep} 
+                  className="prev-button"
+                  disabled={isSubmitting}
+                >
+                  Anterior
+                </button>
+              )}
+              
+              <button 
+                type="button" 
+                onClick={handleSubmit} 
+                className="next-button"
+                disabled={isSubmitting || !isFaceValid}
+              >
+                Completar Registro
+              </button>
+            </div>
           </div>
         );
       
@@ -456,7 +477,7 @@ function RegistrationPage() {
       
       {/* Indicadores de progreso */}
       <div className="progress-indicator">
-        {Array.from({ length: totalSteps }, (_, i) => (
+        {Array.from({ length: totalSteps - 1 }, (_, i) => (
           <div 
             key={i} 
             className={`progress-dot ${i + 1 === currentStep ? 'active' : i + 1 < currentStep ? 'completed' : ''}`}
@@ -464,41 +485,39 @@ function RegistrationPage() {
         ))}
       </div>
       
-      {/* <div className="step-indicator">
-        Paso {currentStep} de {totalSteps}
-      </div> */}
-      
       {submitResult.message && (
         <div className={`result-message ${submitResult.success === true ? 'success' : submitResult.success === false ? 'error' : ''}`}>
           {submitResult.message}
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="wizard-form">
+      <form onSubmit={(e) => e.preventDefault()} className="wizard-form">
         <div className="wizard-container">
           {renderCurrentField()}
           
-          <div className="navigation-buttons">
-            {currentStep > 1 && (
+          {currentStep < 7 && (
+            <div className="navigation-buttons">
+              {currentStep > 1 && (
+                <button 
+                  type="button" 
+                  onClick={prevStep} 
+                  className="prev-button"
+                  disabled={isSubmitting}
+                >
+                  Anterior
+                </button>
+              )}
+              
               <button 
                 type="button" 
-                onClick={prevStep} 
-                className="prev-button"
+                onClick={nextStep} 
+                className="next-button"
                 disabled={isSubmitting}
               >
-                Anterior
+                Siguiente
               </button>
-            )}
-            
-            <button 
-              type="button" 
-              onClick={nextStep} 
-              className="next-button"
-              disabled={isSubmitting || (currentStep === 8 && !isFaceValid)}
-            >
-              {currentStep === totalSteps ? 'Completar Registro' : 'Siguiente'}
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </form>
     </div>
