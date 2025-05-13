@@ -495,9 +495,9 @@ function FaceRecognition({ onFaceCapture }) {
   return (
     <div className="face-recognition">
       <h2>RECONOCIMIENTO FACIAL CON VERIFICACIÓN DE VIDA</h2>
-      
+      '
       {/* Modal de instrucciones - Ahora usando React Portal para renderizar fuera del flujo normal */}
-      {showInstructions && (
+      {/* {showInstructions && (
         <div className="instructions-modal">
           <div className="instructions-content">
             <h3>Instrucciones para la Captura Facial</h3>
@@ -545,7 +545,7 @@ function FaceRecognition({ onFaceCapture }) {
             </button>
           </div>
         </div>
-      )}
+      )} */}
       
       <div className="video-container">
         {captureStep === 4 ? (

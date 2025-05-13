@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
-import ProgressBar from '../../components/ProgressBar/ProgressBar';
 import FaceWarning from '../../pages/FaceWarning/FaceWarning';
-import logo from '../../assets/logoANDICOM.png'; // Importar el logo
+import logo from '../../assets/logoANDICOM.png';
 import './RegistrationPage.css';
-// Eliminamos la importación de IDVerification
-// import IDVerification from '../../components/IDVerification/IDVerification';
 
 function RegistrationPage() {
-  const [currentStep, setCurrentStep] = useState(1); // Nuevo estado para el paso actual
+  // Definimos los pasos del formulario (uno por campo)
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    idNumber: '',  // Mantenemos el campo para cédula
+    idNumber: '',
     email: '',
     countryCode: '+57',
     phoneNumber: '',
@@ -23,68 +20,171 @@ function RegistrationPage() {
   
   const [faceData, setFaceData] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
-  // Eliminamos el estado para datos de ID
-  // const [idData, setIdData] = useState(null);
-  
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFaceValid, setIsFaceValid] = useState(false);
-  // Eliminamos el estado para validación de ID
-  // const [isIdValid, setIsIdValid] = useState(false);
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: null, message: '' });
+  const [fieldErrors, setFieldErrors] = useState({});
   
-  // Actualizamos el total de pasos a 3 (eliminamos el paso de verificación de ID)
-  const totalSteps = 3;
-
-  const handleFormChange = (newFormData, isValid) => {
-    setFormData(newFormData);
-    setIsFormValid(isValid);
+  // Total de pasos: 6 campos + advertencia facial + reconocimiento facial
+  const totalSteps = 8;
+  
+  // Validación de campos individuales
+  const validateField = (name, value) => {
+    let error = '';
+    
+    switch(name) {
+      case 'firstName':
+        if (!value.trim()) error = 'El nombre es obligatorio';
+        break;
+      case 'lastName':
+        if (!value.trim()) error = 'El apellido es obligatorio';
+        break;
+      case 'idNumber':
+        if (!value.trim()) error = 'El número de documento es obligatorio';
+        break;
+      case 'email':
+        if (!value.trim()) error = 'El correo electrónico es obligatorio';
+        else if (!/\S+@\S+\.\S+/.test(value)) error = 'Ingrese un correo electrónico válido';
+        break;
+      case 'phoneNumber':
+        if (!value.trim()) error = 'El número de teléfono es obligatorio';
+        else if (!/^\d{7,10}$/.test(value)) error = 'Ingrese un número de teléfono válido';
+        break;
+      case 'company':
+        if (!value.trim()) error = 'La empresa es obligatoria';
+        break;
+      default:
+        break;
+    }
+    
+    return error;
   };
+  
+  // Manejar cambio en los campos del formulario
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const inputValue = type === 'checkbox' ? checked : value;
+    
+    // Actualizar el valor del campo
+    setFormData(prev => ({
+      ...prev,
+      [name]: inputValue
+    }));
+    
+    // Validar el campo
+    if (type !== 'checkbox') {
+      const error = validateField(name, inputValue);
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    }
+  };
+  
+  // Verificar si el campo actual es válido
+  const isCurrentFieldValid = () => {
+    // Para el primer paso, necesitamos validar tanto firstName como lastName
+    if (currentStep === 1) {
+      return !validateField('firstName', formData.firstName) && 
+             !validateField('lastName', formData.lastName);
+    }
+    
+    // Para los demás pasos, seguimos con la lógica original
+    const fieldNames = ['firstName', 'lastName', 'idNumber', 'email', 'phoneNumber', 'company'];
+    const currentField = fieldNames[currentStep - 1];
+    
+    if (!currentField) return true; // Para pasos que no son campos (advertencia, reconocimiento)
+    
+    const value = formData[currentField];
+    return !validateField(currentField, value);
+  };
+  
+  // Verificar si todos los campos son válidos
+  useEffect(() => {
+    const allFieldsValid = 
+      !validateField('firstName', formData.firstName) &&
+      !validateField('lastName', formData.lastName) &&
+      !validateField('idNumber', formData.idNumber) &&
+      !validateField('email', formData.email) &&
+      !validateField('phoneNumber', formData.phoneNumber) &&
+      !validateField('company', formData.company) &&
+      formData.consent;
+    
+    setIsFormValid(allFieldsValid);
+  }, [formData]);
   
   const handleFaceCapture = (faceEmbeddings, isValid, imageData) => {
     setFaceData(faceEmbeddings);
     setIsFaceValid(isValid);
-    if (imageData) { // Solo actualiza si hay una imagen nueva
+    if (imageData) {
       setCapturedImage(imageData);
     }
   };
-  
-  // Eliminamos la función para manejar la verificación de ID
-  // const handleIdVerification = (idInfo, isValid) => {
-  //   setIdData(idInfo);
-  //   setIsIdValid(isValid);
-  // };
 
   const nextStep = () => {
-    if (currentStep === 1) {
-      if (!isFormValid) {
-        setSubmitResult({ success: false, message: 'Por favor complete todos los campos obligatorios del formulario.' });
+    // Validar el campo actual antes de avanzar
+    if (currentStep <= 6) {
+      if (currentStep === 1) {
+        // Validación especial para el primer paso (nombres y apellidos)
+        const firstNameError = validateField('firstName', formData.firstName);
+        const lastNameError = validateField('lastName', formData.lastName);
+        
+        if (firstNameError) {
+          setSubmitResult({ 
+            success: false, 
+            message: firstNameError
+          });
+          return;
+        }
+        
+        if (lastNameError) {
+          setSubmitResult({ 
+            success: false, 
+            message: lastNameError
+          });
+          return;
+        }
+      } else if (!isCurrentFieldValid()) {
+        // Para los demás pasos, seguimos con la lógica original
+        const fieldNames = ['firstName', 'lastName', 'idNumber', 'email', 'phoneNumber', 'company'];
+        const currentField = fieldNames[currentStep - 1];
+        const error = validateField(currentField, formData[currentField]);
+        
+        setSubmitResult({ 
+          success: false, 
+          message: error || 'Por favor complete este campo correctamente' 
+        });
         return;
       }
-      if (!formData.consent) {
-        setSubmitResult({ success: false, message: 'Debe aceptar el tratamiento de datos para continuar.' });
-        return;
-      }
-    } else if (currentStep === 3 && !isFaceValid) {
-        setSubmitResult({ success: false, message: 'Por favor complete la captura facial correctamente.' });
-        return;
     }
-    // Eliminamos la validación para el paso 4 (verificación de ID)
     
-    setSubmitResult({ success: null, message: '' }); // Limpiar mensajes de error al avanzar
+    // Si estamos en el paso de reconocimiento facial
+    if (currentStep === 8 && !isFaceValid) {
+      setSubmitResult({ 
+        success: false, 
+        message: 'Por favor complete la captura facial correctamente' 
+      });
+      return;
+    }
+    
+    setSubmitResult({ success: null, message: '' });
     setCurrentStep(prev => prev + 1);
+    
+    // Si llegamos al último paso, enviar el formulario automáticamente
+    if (currentStep === totalSteps) {
+      handleSubmit(new Event('submit'));
+    }
   };
 
   const prevStep = () => {
     setCurrentStep(prev => prev - 1);
-    setSubmitResult({ success: null, message: '' }); // Limpiar mensajes al retroceder
+    setSubmitResult({ success: null, message: '' });
   };
 
   const [showThankYouPage, setShowThankYouPage] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(3);
   
-  // Efecto para la redirección después de mostrar la página de agradecimiento
   useEffect(() => {
     let timer;
     if (showThankYouPage && redirectCountdown > 0) {
@@ -100,7 +200,6 @@ function RegistrationPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Actualizamos la validación para enviar sin verificación de ID
     if (isFormValid && isFaceValid && formData.consent) {
       setIsSubmitting(true);
       setSubmitResult({ success: null, message: '' });
@@ -110,7 +209,6 @@ function RegistrationPage() {
           ...formData,
           faceData,
           faceImage: capturedImage,
-          // Eliminamos idData del objeto a enviar
         };
         
         const response = await fetch('https://asistencia-back-evtb.onrender.com/api/visitors', {
@@ -128,7 +226,6 @@ function RegistrationPage() {
             success: true, 
             message: '¡Registro completado con éxito!' 
           });
-          // Mostrar la página de agradecimiento en lugar de recargar
           setShowThankYouPage(true);
         } else {
           setSubmitResult({ 
@@ -146,12 +243,7 @@ function RegistrationPage() {
         setIsSubmitting(false);
       }
     } else {
-      let errorMessage = 'Por favor complete todos los pasos requeridos: ';
-      if (!isFormValid || !formData.consent) errorMessage += 'Datos personales y consentimiento, ';
-      if (!isFaceValid) errorMessage += 'Registro facial, ';
-      // Eliminamos la validación de ID
-      errorMessage = errorMessage.slice(0, -2) + '.'; // Remover la última coma y espacio
-      
+      let errorMessage = 'Por favor complete todos los campos requeridos.';
       setSubmitResult({ 
         success: false, 
         message: errorMessage 
@@ -177,25 +269,204 @@ function RegistrationPage() {
     </div>
   );
   
-  // Si se debe mostrar la página de agradecimiento, renderizarla
   if (showThankYouPage) {
     return <ThankYouPage />;
   }
   
+  // Renderizar el campo actual según el paso
+  const renderCurrentField = () => {
+    switch(currentStep) {
+      case 1:
+        return (
+          <div className="field-slide">
+            <h2>Datos Personales</h2>
+            <p className="field-description">Ingrese sus nombres y apellidos</p>
+            <div className="form-field">
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                placeholder="Nombre(s)"
+                autoFocus
+              />
+              {fieldErrors.firstName && <p className="error-message">{fieldErrors.firstName}</p>}
+            </div>
+            
+            <div className="form-field">
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                placeholder="Apellido(s)"
+              />
+              {fieldErrors.lastName && <p className="error-message">{fieldErrors.lastName}</p>}
+            </div>
+          </div>
+        );
+      
+      case 2:
+        return (
+          <div className="field-slide">
+            <h2>Tipo de Documento</h2>
+            <p className="field-description">Seleccione su tipo de documento de identidad</p>
+            <div className="form-field">
+              <select
+                name="idType"
+                value={formData.idType}
+                onChange={handleInputChange}
+                autoFocus
+              >
+                <option value="">Seleccione tipo de documento</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="PA">Pasaporte</option>
+              </select>
+              {fieldErrors.idType && <p className="error-message">{fieldErrors.idType}</p>}
+            </div>
+          </div>
+        );
+      
+      case 3:
+        return (
+          <div className="field-slide">
+            <h2>Documento de Identidad</h2>
+            <p className="field-description">Ingrese su número de cédula o documento</p>
+            <div className="form-field">
+              <input
+                type="text"
+                name="idNumber"
+                value={formData.idNumber}
+                onChange={handleInputChange}
+                placeholder="Ingrese su número de documento"
+                autoFocus
+              />
+              {fieldErrors.idNumber && <p className="error-message">{fieldErrors.idNumber}</p>}
+            </div>
+          </div>
+        );
+      
+      case 4:
+        return (
+          <div className="field-slide">
+            <h2>Correo Electrónico</h2>
+            <p className="field-description">Ingrese su dirección de correo electrónico</p>
+            <div className="form-field">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="ejemplo@correo.com"
+                autoFocus
+              />
+              {fieldErrors.email && <p className="error-message">{fieldErrors.email}</p>}
+            </div>
+          </div>
+        );
+      
+      case 5:
+        return (
+          <div className="field-slide">
+            <h2>Número de Teléfono</h2>
+            <p className="field-description">Ingrese su número de teléfono</p>
+            <div className="form-field phone-field">
+              <div className="phone-input-container">
+                <select
+                  name="countryCode"
+                  value={formData.countryCode}
+                  onChange={handleInputChange}
+                  className="country-code-select"
+                >
+                  <option value="+57">+57 (Colombia)</option>
+                  <option value="+1">+1 (USA/Canadá)</option>
+                  <option value="+52">+52 (México)</option>
+                  <option value="+34">+34 (España)</option>
+                  <option value="+54">+54 (Argentina)</option>
+                  <option value="+56">+56 (Chile)</option>
+                  <option value="+51">+51 (Perú)</option>
+                </select>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  placeholder="Número de teléfono"
+                  autoFocus
+                  className="phone-number-input"
+                />
+              </div>
+              {fieldErrors.phoneNumber && <p className="error-message">{fieldErrors.phoneNumber}</p>}
+            </div>
+          </div>
+        );
+      
+      case 6:
+        return (
+          <div className="field-slide">
+            <h2>Empresa o Institución</h2>
+            <p className="field-description">Ingrese el nombre de su empresa o institución</p>
+            <div className="form-field">
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleInputChange}
+                placeholder="Nombre de la empresa"
+                autoFocus
+              />
+              {fieldErrors.company && <p className="error-message">{fieldErrors.company}</p>}
+            </div>
+            
+            <div className="consent-field">
+              <label>
+                <input
+                  type="checkbox"
+                  name="consent"
+                  checked={formData.consent}
+                  onChange={handleInputChange}
+                />
+                Acepto el tratamiento de mis datos personales según la política de privacidad
+              </label>
+            </div>
+          </div>
+        );
+      case 7:
+        return (
+          <div className="field-slide">
+            <h2>Reconocimiento Facial</h2>
+            <FaceRecognition 
+              onFaceCapture={handleFaceCapture}
+              initialCapturedImage={capturedImage}
+            />
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
+  
   return (
     <div className="registration-page">
       <div className="logo-container">
-        <img src={logo} alt="Logo" className="header-logo" />
+        <img src={logo} alt="Logo ANDICOM" className="header-logo" />
       </div>
-      <h1>REGISTRO DE VISITANTES</h1>
       
-      {/* Barra de Progreso */}
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
-      {/* Indicador de Pasos (opcional, ya que la barra de progreso también informa) */}
-      <div className="step-indicator">
-        Paso {currentStep} de {totalSteps}
+      {/* Indicadores de progreso */}
+      <div className="progress-indicator">
+        {Array.from({ length: totalSteps }, (_, i) => (
+          <div 
+            key={i} 
+            className={`progress-dot ${i + 1 === currentStep ? 'active' : i + 1 < currentStep ? 'completed' : ''}`}
+          />
+        ))}
       </div>
+      
+      {/* <div className="step-indicator">
+        Paso {currentStep} de {totalSteps}
+      </div> */}
       
       {submitResult.message && (
         <div className={`result-message ${submitResult.success === true ? 'success' : submitResult.success === false ? 'error' : ''}`}>
@@ -203,59 +474,31 @@ function RegistrationPage() {
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
-        {/* Renderizado condicional basado en el paso actual */}
-        {currentStep === 1 && (
-          <div className="step-container form-section">
-            <h2>Paso 1: Datos Personales</h2>
-            <RegistrationForm 
-              formData={formData} 
-              onChange={handleFormChange} 
-            />
-          </div>
-        )}
-        
-        {currentStep === 2 && (
-          <div className="step-container warning-section">
-            <h2>Paso 2: Advertencias de Reconocimiento Facial</h2>
-            <FaceWarning />
-          </div>
-        )}
-
-        {currentStep === 3 && (
-          <div className="step-container face-recognition-section">
-            <h2>Paso 3: Reconocimiento Facial</h2>
-            <FaceRecognition 
-              onFaceCapture={handleFaceCapture}
-              initialCapturedImage={capturedImage}
-            />
-          </div>
-        )}
-
-        {/* Eliminamos el paso 4 de verificación de ID */}
-
-        {/* Botones de navegación y envío */}
-        <div className="navigation-buttons">
-          {currentStep > 1 && (
-            <button type="button" onClick={prevStep} disabled={isSubmitting}>
-              Anterior
-            </button>
-          )}
+      <form onSubmit={handleSubmit} className="wizard-form">
+        <div className="wizard-container">
+          {renderCurrentField()}
           
-          {currentStep < 3 && (
-            <button type="button" onClick={nextStep} disabled={isSubmitting}>
-              Siguiente
-            </button>
-          )}
-          
-          {currentStep === 3 && (
+          <div className="navigation-buttons">
+            {currentStep > 1 && (
+              <button 
+                type="button" 
+                onClick={prevStep} 
+                className="prev-button"
+                disabled={isSubmitting}
+              >
+                Anterior
+              </button>
+            )}
+            
             <button 
-              type="submit" 
-              disabled={!isFormValid || !isFaceValid || !formData.consent || isSubmitting}
+              type="button" 
+              onClick={nextStep} 
+              className="next-button"
+              disabled={isSubmitting || (currentStep === 8 && !isFaceValid)}
             >
-              {isSubmitting ? 'Enviando...' : 'Completar Registro'}
+              {currentStep === totalSteps ? 'Completar Registro' : 'Siguiente'}
             </button>
-          )}
+          </div>
         </div>
       </form>
     </div>
