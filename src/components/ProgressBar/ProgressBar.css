@@ -11,7 +11,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(to right, #6EC1E4, #07E7F9); /* Degradado de tu paleta */
+  background: linear-gradient(to right, #6EC1E4, #052b49); /* Degradado de tu paleta */
   border-radius: 8px; /* Mismos bordes redondeados */
   display: flex;
   align-items: center;

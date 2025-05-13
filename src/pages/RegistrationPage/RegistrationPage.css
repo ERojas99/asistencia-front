@@ -101,7 +101,7 @@
 }
 
 .submit-section button:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #05304f;
 }
 
 .submit-section button:disabled {
@@ -151,12 +151,12 @@
 }
 
 .navigation-buttons button[type="submit"] {
-  background-color: #28a745; /* Verde */
+  background-color: #072441; /* Verde */
   color: white;
 }
 
 .navigation-buttons button[type="submit"]:hover:not(:disabled) {
-   background-color: #218838;
+   background-color: #072441;
 }
 
 .navigation-buttons button:disabled {
@@ -185,11 +185,97 @@
 @media (max-width: 480px) {
   .registration-page {
     padding: 10px;
+    margin: 0;
+    max-width: 100%;
+    box-shadow: none;
   }
   
   .registration-page h1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+  
+  .step-container {
+    padding: 10px;
     margin-bottom: 15px;
+  }
+  
+  .step-container h2 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  .step-indicator {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    margin: 10px 0;
+  }
+  
+  .navigation-buttons button {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .result-message {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .logo-container {
+    margin-bottom: 10px;
+  }
+  
+  .header-logo {
+    max-width: 120px;
+  }
+}
+
+/* Ajustes para dispositivos muy pequeños */
+@media (max-width: 350px) {
+  .registration-page h1 {
+    font-size: 1.1rem;
+  }
+  
+  .step-container h2 {
+    font-size: 1rem;
+  }
+  
+  .navigation-buttons button {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Orientación horizontal en dispositivos móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+  .registration-page {
+    padding: 5px;
+  }
+  
+  .logo-container {
+    margin-bottom: 5px;
+  }
+  
+  .header-logo {
+    max-width: 80px;
+  }
+  
+  .registration-page h1 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+  }
+  
+  .step-indicator {
+    margin: 5px 0;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .step-container {
+    padding: 8px;
+    margin-bottom: 10px;
   }
 }
 

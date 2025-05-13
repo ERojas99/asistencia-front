@@ -15,7 +15,9 @@ function FaceRecognition({ onFaceCapture }) {
   const [faceEmbeddings, setFaceEmbeddings] = useState(null);
   const [correctPose, setCorrectPose] = useState(false);
   
-  // Estados para la detección de vida
+  // Estado para el modal de instrucciones - Inicializado como true para mostrar al cargar
+  const [showInstructions, setShowInstructions] = useState(true);
+  
   const [captureStep, setCaptureStep] = useState(0); // 0: no iniciado, 1: frontal, 2: derecha, 3: izquierda, 4: completado
   const [capturedImages, setCapturedImages] = useState({
     frontal: null,
@@ -78,6 +80,8 @@ function FaceRecognition({ onFaceCapture }) {
         videoRef.current.srcObject = stream;
         setIsCameraActive(true);
         setFeedback('Cámara activada. Posicione su rostro frente a la cámara.');
+        // Ya no necesitamos mostrar instrucciones aquí, ya que se muestran al cargar
+        // setShowInstructions(true);
       }
     } catch (error) {
       console.error('Error al acceder a la cámara:', error);
@@ -491,6 +495,57 @@ function FaceRecognition({ onFaceCapture }) {
   return (
     <div className="face-recognition">
       <h2>RECONOCIMIENTO FACIAL CON VERIFICACIÓN DE VIDA</h2>
+      
+      {/* Modal de instrucciones - Ahora usando React Portal para renderizar fuera del flujo normal */}
+      {showInstructions && (
+        <div className="instructions-modal">
+          <div className="instructions-content">
+            <h3>Instrucciones para la Captura Facial</h3>
+            <p>Para obtener los mejores resultados, siga estas indicaciones:</p>
+            <ul>
+              <li>Asegúrese de estar en un lugar con buena iluminación</li>
+              <li>Retire anteojos, gorras u otros accesorios que cubran su rostro</li>
+              <li>Mantenga una expresión neutral</li>
+              <li>Siga las instrucciones para cada paso de la verificación:</li>
+            </ul>
+            
+            <div className="instruction-steps">
+              <div className="instruction-step">
+                <div className="step-number">1</div>
+                <div className="step-text">
+                  <strong>Posición Frontal</strong>
+                  <p>Mire directamente a la cámara con su rostro centrado</p>
+                </div>
+              </div>
+              
+              <div className="instruction-step">
+                <div className="step-number">2</div>
+                <div className="step-text">
+                  <strong>Giro a la Izquierda</strong>
+                  <p>Gire lentamente su rostro hacia la izquierda</p>
+                </div>
+              </div>
+              
+              <div className="instruction-step">
+                <div className="step-number">3</div>
+                <div className="step-text">
+                  <strong>Giro a la Derecha</strong>
+                  <p>Gire lentamente su rostro hacia la derecha</p>
+                </div>
+              </div>
+            </div>
+            
+            <p className="note">El sistema capturará automáticamente su rostro cuando detecte la posición correcta en cada paso.</p>
+            
+            <button 
+              className="close-instructions-btn" 
+              onClick={() => setShowInstructions(false)}
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
       
       <div className="video-container">
         {captureStep === 4 ? (

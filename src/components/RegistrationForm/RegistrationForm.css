@@ -11,7 +11,7 @@
 
 .registration-form h2 {
   margin-top: 0;
-  color: #30c645;
+  color: #05304f;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
 }
@@ -49,7 +49,7 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #42e761;
+  border-color: #05304f;
   outline: none;
   box-shadow: 0 0 0 2px rgba(1, 1, 12,0);
 }
@@ -137,22 +137,83 @@
   }
 }
 
+/* Mejoras para dispositivos móviles */
 @media (max-width: 480px) {
-  .phone-group .phone-input-container {
-    flex-direction: row; /* Mantener en fila incluso en móviles */
-  }
-  
-  .phone-group .country-code-select {
-    min-width: 80px;
-    flex-basis: 80px;
+  .registration-form {
+    padding: 12px;
+    margin: 0;
+    border-radius: 6px;
   }
   
   .form-group input[type="text"],
   .form-group input[type="email"],
   .form-group input[type="tel"],
   .form-group select {
-    font-size: 0.9rem;
     padding: 10px;
+    font-size: 16px; /* Tamaño mínimo para evitar zoom en iOS */
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .phone-group .phone-input-container {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .phone-group .country-code-select {
+    min-width: 90px;
+    flex-basis: 90px;
+    font-size: 14px;
+    padding: 10px 5px;
+  }
+  
+  .phone-group .phone-number-input {
+    flex: 1;
+  }
+  
+  .form-group.consent-group label {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+}
+
+/* Ajustes para dispositivos muy pequeños */
+@media (max-width: 350px) {
+  .registration-form h2 {
+    font-size: 1rem;
+  }
+  
+  .form-group label {
+    font-size: 0.8rem;
+  }
+  
+  .phone-group .country-code-select {
+    min-width: 80px;
+    flex-basis: 80px;
+  }
+}
+
+/* Asegurar que los inputs sean fáciles de tocar en dispositivos táctiles */
+@media (pointer: coarse) {
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="tel"],
+  .form-group select,
+  .form-group input[type="checkbox"] {
+    min-height: 44px; /* Altura mínima recomendada para elementos táctiles */
+  }
+  
+  .form-group.consent-group label {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .form-group.consent-group input[type="checkbox"] {
+    margin-top: 3px;
+    min-width: 20px;
+    min-height: 20px;
   }
 }
   
