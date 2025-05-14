@@ -559,39 +559,7 @@ function FaceRecognition({ onFaceCapture }) {
         )}
       </div>
       
-      <div className="feedback-container">
-        <p className="feedback-message">{feedback}</p>
-        
-        <div className="status-indicators">
-          {isModelLoaded ? (
-            <span className="status-indicator success">Modelos cargados ✓</span>
-          ) : (
-            <span className="status-indicator loading">Cargando modelos...</span>
-          )}
-          
-          {isCameraActive && (
-            <span className="status-indicator success">Cámara activa ✓</span>
-          )}
-          
-          {isHuman && (
-            <span className="status-indicator success">Rostro humano ✓</span>
-          )}
-          
-          {isAdult && (
-            <span className="status-indicator success">Mayor de edad ✓</span>
-          )}
-          
-          {livenessVerified && (
-            <span className="status-indicator success">Verificación de vida ✓</span>
-          )}
-          
-          {captureStep > 0 && captureStep < 4 && (
-            <span className="status-indicator info">
-              Paso {captureStep} de 3
-            </span>
-          )}
-        </div>
-      </div>
+      
       
       <div className="button-container">
         {!isCameraActive && (
