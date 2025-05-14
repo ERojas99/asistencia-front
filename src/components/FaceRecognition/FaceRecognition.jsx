@@ -514,59 +514,20 @@ function FaceRecognition({ onFaceCapture }) {
 
   return (
     <div className="face-recognition">
-      <h2>RECONOCIMIENTO FACIAL CON VERIFICACIÓN DE VIDA</h2>
-      '
-      {/* Modal de instrucciones - Ahora usando React Portal para renderizar fuera del flujo normal */}
-      {/* {showInstructions && (
-        <div className="instructions-modal">
-          <div className="instructions-content">
-            <h3>Instrucciones para la Captura Facial</h3>
-            <p>Para obtener los mejores resultados, siga estas indicaciones:</p>
-            <ul>
-              <li>Asegúrese de estar en un lugar con buena iluminación</li>
-              <li>Retire anteojos, gorras u otros accesorios que cubran su rostro</li>
-              <li>Mantenga una expresión neutral</li>
-              <li>Siga las instrucciones para cada paso de la verificación:</li>
-            </ul>
-            
-            <div className="instruction-steps">
-              <div className="instruction-step">
-                <div className="step-number">1</div>
-                <div className="step-text">
-                  <strong>Posición Frontal</strong>
-                  <p>Mire directamente a la cámara con su rostro centrado</p>
-                </div>
+      {captureStep > 0 && captureStep < 4 && (
+        <div className="capture-steps">
+          <div className="step-indicator active">
+            {captureStep === 1 && (
+              <div className="step-message">
+                <div className="countdown">Preparando verificación...</div>
+                <div>Ponga su rostro en posición Frontal</div>
               </div>
-              
-              <div className="instruction-step">
-                <div className="step-number">2</div>
-                <div className="step-text">
-                  <strong>Giro a la Izquierda</strong>
-                  <p>Gire lentamente su rostro hacia la izquierda</p>
-                </div>
-              </div>
-              
-              <div className="instruction-step">
-                <div className="step-number">3</div>
-                <div className="step-text">
-                  <strong>Giro a la Derecha</strong>
-                  <p>Gire lentamente su rostro hacia la derecha</p>
-                </div>
-              </div>
-            </div>
-            
-            <p className="note">El sistema capturará automáticamente su rostro cuando detecte la posición correcta en cada paso.</p>
-            
-            <button 
-              className="close-instructions-btn" 
-              onClick={() => setShowInstructions(false)}
-            >
-              Entendido
-            </button>
+            )}
+            {captureStep === 2 && "Gire su rostro a la Izquierda"}
+            {captureStep === 3 && "Gire su rostro a la Derecha"}
           </div>
         </div>
-      )} */}
-      
+      )}
       <div className="video-container">
         {captureStep === 4 ? (
           <div className="captured-images-grid">
@@ -630,20 +591,6 @@ function FaceRecognition({ onFaceCapture }) {
             </span>
           )}
         </div>
-        
-        {captureStep > 0 && captureStep < 4 && (
-          <div className="capture-steps">
-            <div className={`step-indicator ${captureStep >= 1 ? 'active' : ''} ${captureStep > 1 ? 'completed' : ''}`}>
-              Rostro Frontal
-            </div>
-            <div className={`step-indicator ${captureStep >= 2 ? 'active' : ''} ${captureStep > 2 ? 'completed' : ''}`}>
-              Gire su rostro a la Izquierda
-            </div>
-            <div className={`step-indicator ${captureStep >= 3 ? 'active' : ''} ${captureStep > 3 ? 'completed' : ''}`}>
-              Gire su rostro a la Derecha
-            </div>
-          </div>
-        )}
       </div>
       
       <div className="button-container">
@@ -657,14 +604,6 @@ function FaceRecognition({ onFaceCapture }) {
           </button>
         )}
         
-        {/* {isCameraActive && (
-          <button 
-            className="camera-button"
-            onClick={toggleCamera}
-          >
-            Desactivar Cámara
-          </button>
-        )} */}
         
         {captureStep === 0 && (
           <button 
