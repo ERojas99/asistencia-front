@@ -55,7 +55,10 @@ function FaceRecognition({ onFaceCapture }) {
         ]);
         
         setIsModelLoaded(true);
-        setFeedback('Modelos cargados. Active la cámara para comenzar.');
+        setFeedback('Modelos cargados. Iniciando cámara automáticamente...');
+        
+        // Iniciar la cámara automáticamente después de cargar los modelos
+        startCamera();
       } catch (error) {
         console.error('Error al cargar modelos:', error);
         setFeedback('Error al cargar modelos. Intente recargar la página.');
@@ -80,8 +83,6 @@ function FaceRecognition({ onFaceCapture }) {
         videoRef.current.srcObject = stream;
         setIsCameraActive(true);
         setFeedback('Cámara activada. Posicione su rostro frente a la cámara.');
-        // Ya no necesitamos mostrar instrucciones aquí, ya que se muestran al cargar
-        // setShowInstructions(true);
       }
     } catch (error) {
       console.error('Error al acceder a la cámara:', error);
@@ -189,6 +190,16 @@ function FaceRecognition({ onFaceCapture }) {
     }
   }, [faceAngle, captureStep, isHuman, isAdult, faceEmbeddings, isCameraActive]);
   
+  // Efecto para iniciar automáticamente el proceso de captura cuando se detecta un rostro adulto
+  useEffect(() => {
+    if (isHuman && isAdult && faceEmbeddings && isCameraActive && captureStep === 0) {
+      console.log('Rostro adulto detectado, iniciando proceso de verificación automáticamente');
+      setFeedback('Rostro detectado. Iniciando verificación automática...');
+      // Iniciar el proceso de captura automáticamente
+      startCapture();
+    }
+  }, [isHuman, isAdult, faceEmbeddings, isCameraActive, captureStep]);
+  
   // Eliminar o simplificar el efecto de cuenta regresiva ya que no lo necesitamos
   useEffect(() => {
     let countdownTimer;
@@ -202,11 +213,20 @@ function FaceRecognition({ onFaceCapture }) {
       // Cuando la cuenta regresiva llega a 0, capturar automáticamente
       console.log('Ejecutando captura automática');
       handleCapture();
-      setIsCapturing(false);
     }
     
-    return () => clearTimeout(countdownTimer);
+    return () => {
+      if (countdownTimer) clearTimeout(countdownTimer);
+    };
   }, [isCapturing, captureCountdown]);
+  
+  // Función para iniciar el proceso de captura
+  const startCapture = () => {
+    if (captureStep === 0) {
+      setCaptureStep(1);
+      setFeedback('Mantenga su rostro mirando al frente');
+    }
+  };
   
   // Procesar el video para detección facial
   const handleVideoPlay = () => {
