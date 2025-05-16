@@ -64,7 +64,16 @@ function RegistrationPage() {
   // Manejar cambio en los campos del formulario
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const inputValue = type === 'checkbox' ? checked : value;
+    let inputValue = type === 'checkbox' ? checked : value;
+    
+    // Filtrar caracteres no numéricos para los campos de cédula y teléfono
+    if (name === 'idNumber' || name === 'phoneNumber') {
+      inputValue = value.replace(/\D/g, ''); // Elimina todos los caracteres que no sean dígitos
+    }
+    // Convertir a mayúsculas los campos de nombre, apellido y empresa
+    else if (type === 'text' && (name === 'firstName' || name === 'lastName' || name === 'company')) {
+      inputValue = value.toUpperCase();
+    }
     
     // Actualizar el valor del campo
     setFormData(prev => ({
@@ -341,6 +350,8 @@ function RegistrationPage() {
                 onChange={handleInputChange}
                 placeholder="Ingrese su número de documento"
                 autoFocus
+                inputMode="numeric"
+                pattern="[0-9]*"
               />
               {fieldErrors.idNumber && <p className="error-message">{fieldErrors.idNumber}</p>}
             </div>
@@ -395,6 +406,8 @@ function RegistrationPage() {
                   placeholder="Número de teléfono"
                   autoFocus
                   className="phone-number-input"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                 />
               </div>
               {fieldErrors.phoneNumber && <p className="error-message">{fieldErrors.phoneNumber}</p>}
