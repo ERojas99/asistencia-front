@@ -75,6 +75,37 @@ function FaceRecognition({ onFaceCapture }) {
   // Iniciar la cámara
   const startCamera = async () => {
     try {
+      // Verificar si navigator.mediaDevices está disponible
+      if (!navigator.mediaDevices) {
+        // Intentar usar el método antiguo como fallback
+        if (navigator.getUserMedia || navigator.webkitGetUserMedia || 
+            navigator.mozGetUserMedia || navigator.msGetUserMedia) {
+          
+          const getUserMedia = navigator.getUserMedia || 
+                              navigator.webkitGetUserMedia || 
+                              navigator.mozGetUserMedia || 
+                              navigator.msGetUserMedia;
+          
+          getUserMedia(
+            { video: { width: 640, height: 480 } },
+            (stream) => {
+              if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                setIsCameraActive(true);
+                setFeedback('Cámara activada. Posicione su rostro frente a la cámara.');
+              }
+            },
+            (error) => {
+              console.error('Error al acceder a la cámara (método antiguo):', error);
+              setFeedback('No se pudo acceder a la cámara. Por favor, verifique los permisos o intente con otro navegador.');
+            }
+          );
+          return;
+        }
+        
+        throw new Error('navigator.mediaDevices no está disponible en este navegador');
+      }
+      
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           width: { ideal: 640 },
@@ -90,7 +121,7 @@ function FaceRecognition({ onFaceCapture }) {
       }
     } catch (error) {
       console.error('Error al acceder a la cámara:', error);
-      setFeedback('Error al acceder a la cámara. Verifique los permisos.');
+      setFeedback('Error al acceder a la cámara. Verifique los permisos o intente con otro navegador.');
     }
   };
   
@@ -677,7 +708,7 @@ function FaceRecognition({ onFaceCapture }) {
             onClick={startLivenessCheck}
             disabled={!isHuman || !isAdult || !faceEmbeddings || !isCameraActive}
           >
-            Iniciar Verificación
+            Iniciando Verificación...
           </button>
         )}
         
