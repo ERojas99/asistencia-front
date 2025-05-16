@@ -290,9 +290,9 @@ function FaceRecognition({ onFaceCapture }) {
     if (captureStep === 1) {
       setFeedback('Paso 1: Mantenga su rostro mirando al frente...');
     } else if (captureStep === 2) {
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la derecha...');
+      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda...');
     } else if (captureStep === 3) {
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la izquierda...');
+      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha...');
     } else if (captureStep === 4) {
       setFeedback('Paso 4: Incline su rostro hacia arriba...');
     } else if (captureStep === 5) {
@@ -365,10 +365,10 @@ function FaceRecognition({ onFaceCapture }) {
                 stepText = 'Mire al frente';
                 angleText = Math.abs(angles.horizontal) < 15 && Math.abs(angles.vertical) < 15 ? '✓' : 'Alinee su rostro';
               } else if (captureStep === 2) {
-                stepText = 'Gire a la derecha';
+                stepText = 'Gire a la izquierda';
                 angleText = angles.horizontal > 20 ? '✓' : 'Gire más';
               } else if (captureStep === 3) {
-                stepText = 'Gire a la izquierda';
+                stepText = 'Gire a la derecha';
                 angleText = angles.horizontal < -20 ? '✓' : 'Gire más';
               } else if (captureStep === 4) {
                 stepText = 'Mire hacia arriba';
@@ -642,8 +642,8 @@ function FaceRecognition({ onFaceCapture }) {
                 <div>Ponga su rostro en posición Frontal</div>
               </div>
             )}
-            {captureStep === 2 && "Gire su rostro a la Derecha"}
-            {captureStep === 3 && "Gire su rostro a la Izquierda"}
+            {captureStep === 2 && "Gire su rostro a la Izquierda"}
+            {captureStep === 3 && "Gire su rostro a la derecha"}
             {captureStep === 4 && "Incline su rostro hacia Arriba"}
             {captureStep === 5 && "Incline su rostro hacia Abajo"}
           </div>
