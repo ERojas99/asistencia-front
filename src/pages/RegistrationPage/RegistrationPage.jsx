@@ -10,6 +10,7 @@ function RegistrationPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    idType: '',  // Asegurarse de que comience vacío
     idNumber: '',
     email: '',
     countryCode: '+57',
@@ -39,6 +40,9 @@ function RegistrationPage() {
         break;
       case 'lastName':
         if (!value.trim()) error = 'El apellido es obligatorio';
+        break;
+      case 'idType':
+        if (!value) error = 'Debe seleccionar un tipo de documento';
         break;
       case 'idNumber':
         if (!value.trim()) error = 'El número de documento es obligatorio';
@@ -93,6 +97,48 @@ function RegistrationPage() {
   
   // Verificar si el campo actual es válido
   const isCurrentFieldValid = () => {
+    // Validación específica para el paso 6 (empresa y consentimiento)
+    if (currentStep === 6) {
+      const companyValid = !validateField('company', formData.company);
+      // Verificar que el checkbox de consentimiento esté marcado
+      const consentValid = formData.consent === true;
+      
+      // Si el consentimiento no es válido, mostrar un error
+      if (!consentValid) {
+        setFieldErrors(prev => ({
+          ...prev,
+          consent: 'Debe aceptar los términos y condiciones para continuar'
+        }));
+      } else {
+        // Limpiar el error si el consentimiento es válido
+        setFieldErrors(prev => ({
+          ...prev,
+          consent: ''
+        }));
+      }
+      
+      return companyValid && consentValid;
+    }
+    
+    // Validación específica para el paso 2 (tipo de documento)
+    if (currentStep === 2) {
+      const idTypeValid = !!formData.idType;
+      
+      if (!idTypeValid) {
+        setFieldErrors(prev => ({
+          ...prev,
+          idType: 'Debe seleccionar un tipo de documento'
+        }));
+      } else {
+        setFieldErrors(prev => ({
+          ...prev,
+          idType: ''
+        }));
+      }
+      
+      return idTypeValid;
+    }
+    
     // Para el primer paso, necesitamos validar tanto firstName como lastName
     if (currentStep === 1) {
       return !validateField('firstName', formData.firstName) && 
@@ -107,6 +153,46 @@ function RegistrationPage() {
     
     const value = formData[currentField];
     return !validateField(currentField, value);
+  };
+
+  // Eliminar esta primera definición de nextStep
+  // const nextStep = () => {
+  //   // Validar el campo actual antes de avanzar
+  //   if (!isCurrentFieldValid()) {
+  //     return; // No avanzar si el campo no es válido
+  //   }
+  //   
+  //   if (currentStep < totalSteps) {
+  //     setCurrentStep(currentStep + 1);
+  //   }
+  // };
+  
+  // Manejador de eventos para la tecla Enter
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      
+      // Verificación específica para el paso 6 (empresa y consentimiento)
+      if (currentStep === 6 && !formData.consent) {
+        setFieldErrors(prev => ({
+          ...prev,
+          consent: 'Debe aceptar los términos y condiciones para continuar'
+        }));
+        
+        setSubmitResult({ 
+          success: false, 
+          message: 'Debe aceptar los términos y condiciones para continuar' 
+        });
+        return;
+      }
+      
+      // Solo avanzar si no estamos en el último paso
+      if (currentStep < totalSteps) {
+        nextStep();
+      } else if (currentStep === totalSteps) {
+        handleSubmit(new Event('submit'));
+      }
+    }
   };
   
   // Verificar si todos los campos son válidos
@@ -151,6 +237,15 @@ function RegistrationPage() {
           setSubmitResult({ 
             success: false, 
             message: lastNameError
+          });
+          return;
+        }
+      } else if (currentStep === 2) {
+        // Validación especial para el segundo paso (tipo de documento)
+        if (!formData.idType) {
+          setSubmitResult({ 
+            success: false, 
+            message: 'Debe seleccionar un tipo de documento'
           });
           return;
         }
@@ -298,6 +393,7 @@ function RegistrationPage() {
                 onChange={handleInputChange}
                 placeholder="Nombre(s)"
                 autoFocus
+                onKeyDown={handleKeyDown}
               />
               {fieldErrors.firstName && <p className="error-message">{fieldErrors.firstName}</p>}
             </div>
@@ -309,6 +405,7 @@ function RegistrationPage() {
                 value={formData.lastName}
                 onChange={handleInputChange}
                 placeholder="Apellido(s)"
+                onKeyDown={handleKeyDown}
               />
               {fieldErrors.lastName && <p className="error-message">{fieldErrors.lastName}</p>}
             </div>
@@ -326,6 +423,7 @@ function RegistrationPage() {
                 value={formData.idType}
                 onChange={handleInputChange}
                 autoFocus
+                onKeyDown={handleKeyDown}
               >
                 <option value="">Seleccione tipo de documento</option>
                 <option value="CC">Cédula de Ciudadanía</option>
@@ -350,6 +448,7 @@ function RegistrationPage() {
                 onChange={handleInputChange}
                 placeholder="Ingrese su número de documento"
                 autoFocus
+
                 inputMode="numeric"
                 pattern="[0-9]*"
               />
@@ -371,6 +470,7 @@ function RegistrationPage() {
                 onChange={handleInputChange}
                 placeholder="ejemplo@correo.com"
                 autoFocus
+                onKeyDown={handleKeyDown}
               />
               {fieldErrors.email && <p className="error-message">{fieldErrors.email}</p>}
             </div>
@@ -389,6 +489,7 @@ function RegistrationPage() {
                   value={formData.countryCode}
                   onChange={handleInputChange}
                   className="country-code-select"
+                  onKeyDown={handleKeyDown}
                 >
                   <option value="+57">+57 (Colombia)</option>
                   <option value="+1">+1 (USA/Canadá)</option>
@@ -408,6 +509,7 @@ function RegistrationPage() {
                   className="phone-number-input"
                   inputMode="numeric"
                   pattern="[0-9]*"
+
                 />
               </div>
               {fieldErrors.phoneNumber && <p className="error-message">{fieldErrors.phoneNumber}</p>}
@@ -428,6 +530,7 @@ function RegistrationPage() {
                 onChange={handleInputChange}
                 placeholder="Nombre de la empresa"
                 autoFocus
+                onKeyDown={handleKeyDown}
               />
               {fieldErrors.company && <p className="error-message">{fieldErrors.company}</p>}
             </div>
@@ -439,9 +542,11 @@ function RegistrationPage() {
                   name="consent"
                   checked={formData.consent}
                   onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
                 />
                 Acepto el tratamiento de mis datos personales según la política de privacidad
               </label>
+              {fieldErrors.consent && <p className="error-message">{fieldErrors.consent}</p>}
             </div>
           </div>
         );
