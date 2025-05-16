@@ -534,68 +534,27 @@ function FaceRecognition({ onFaceCapture }) {
 
   // Capturar el rostro en el paso actual
   const handleCapture = () => {
-    if (!isHuman || !isAdult || !faceEmbeddings || !isCameraActive) {
-      setFeedback('No se puede capturar. Asegúrese de que su rostro sea visible y sea mayor de 18 años.');
-      return;
-    }
-    
-    // Verificar si el ángulo es correcto para el paso actual
-    if (!verifyAngleForStep(faceAngle, captureStep)) {
-      let mensaje = 'Posición incorrecta. Por favor, ';
-      mensaje += getStepInstruction(captureStep);
-      mensaje += ' antes de capturar.';
-      setFeedback(mensaje);
-      return;
-    }
-    
-    // Capturar la imagen actual
-    const capturedImage = captureCurrentImage();
-    if (!capturedImage) {
-      setFeedback('Error al capturar la imagen. Intente nuevamente.');
-      return;
-    }
-    
-    // Actualizar el estado según el paso actual
-    const newCapturedImages = { ...capturedImages };
-    const newFaceEmbeddingsMulti = { ...faceEmbeddingsMulti };
-    
-    if (captureStep === 1) {
-      newCapturedImages.frontal = capturedImage;
-      newFaceEmbeddingsMulti.frontal = faceEmbeddings;
-      setFeedback('Imagen frontal capturada correctamente. ' + getStepFeedback(2));
-      setCaptureStep(2);
-    } else if (captureStep === 2) {
-      newCapturedImages.right = capturedImage;
-      newFaceEmbeddingsMulti.right = faceEmbeddings;
-      setFeedback('Imagen derecha capturada correctamente. ' + getStepFeedback(3));
-      setCaptureStep(3);
-    } else if (captureStep === 3) {
-      newCapturedImages.left = capturedImage;
-      newFaceEmbeddingsMulti.left = faceEmbeddings;
-      setFeedback('Imagen izquierda capturada correctamente. ' + getStepFeedback(4));
-      setCaptureStep(4);
-    } else if (captureStep === 4) {
-      newCapturedImages.up = capturedImage;
-      newFaceEmbeddingsMulti.up = faceEmbeddings;
-      setFeedback('Imagen superior capturada correctamente. ' + getStepFeedback(5));
-      setCaptureStep(5);
-    } else if (captureStep === 5) {
-      newCapturedImages.down = capturedImage;
-      newFaceEmbeddingsMulti.down = faceEmbeddings;
-      setFeedback('¡Todas las imágenes capturadas correctamente! Verificando...');
-      setCaptureStep(6);
+    const imageData = captureCurrentImage();
+    if (imageData) {
+      const updatedImages = { ...capturedImages };
+      updatedImages[stepsConfig[captureStep].name] = imageData;
+      setCapturedImages(updatedImages);
+  
+      // Verificar si todas las capturas están completas
+      const allCapturesComplete = Object.values(updatedImages).every(img => img !== null);
       
-      // Verificar la prueba de vida
-      verifyLiveness(newCapturedImages, newFaceEmbeddingsMulti);
+      if (allCapturesComplete) {
+        setLivenessVerified(true);
+        onFaceCapture(faceEmbeddingsMulti, true, imageData); // Notificar que la validación facial está completa
+      }
+      
+      // Avanzar al siguiente paso o completar
+      if (captureStep < 5) {
+        setCaptureStep(captureStep + 1);
+      } else {
+        setCaptureStep(6); // Estado completado
+      }
     }
-    
-    setCapturedImages(newCapturedImages);
-    setFaceEmbeddingsMulti(newFaceEmbeddingsMulti);
-    
-    // Reiniciar el tiempo de pose correcta y la captura
-    setCorrectPoseTime(0);
-    setIsCapturing(false);
-    setCaptureCountdown(0);
   };
 
   // Verificar la prueba de vida
@@ -648,25 +607,11 @@ function FaceRecognition({ onFaceCapture }) {
       <div className="video-container">
         {captureStep === 6 ? (
           <div className="captured-images-grid">
-            <div className="captured-image-container">
-              <img src={capturedImages.frontal} alt="Rostro frontal" className="captured-image" />
-              <span className="capture-label">Frontal</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.right} alt="Rostro derecha" className="captured-image" />
-              <span className="capture-label">Derecha</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.left} alt="Rostro izquierda" className="captured-image" />
-              <span className="capture-label">Izquierda</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.up} alt="Rostro arriba" className="captured-image" />
-              <span className="capture-label">Arriba</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.down} alt="Rostro abajo" className="captured-image" />
-              <span className="capture-label">Abajo</span>
+            <div className="completion-message">
+              <svg className="check-icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+              <p className="completion-text">¡Registro facial completado con éxito!</p>
             </div>
           </div>
         ) : (
