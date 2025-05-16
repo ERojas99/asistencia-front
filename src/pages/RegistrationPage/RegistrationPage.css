@@ -33,6 +33,7 @@
   max-width: 180px;
   height: auto;
   filter: drop-shadow(0 0 10px rgba(106, 240, 251, 0.3));
+  padding: 20px 0; /* Added vertical padding */
 }
 
 /* Indicadores de progreso */
@@ -72,6 +73,7 @@
   width: 100%;
   max-width: 500px;
   height: auto;
+  min-height: auto;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -89,9 +91,11 @@
 .wizard-form {
   width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   flex: 1;
+  margin: 0 auto;
+  padding-top: 20px;
 }
 
 /* Efecto de brillo en los bordes */
@@ -143,10 +147,19 @@
   font-size: 0.9rem;
 }
 
+select {
+  color: black;
+}
+
+
+#idType {
+  color: black;
+}
 /* Estilos para los campos de formulario */
 .form-field {
   margin-bottom: 15px;
   width: 100%;
+  color: black;
   max-width: 450px;
   margin-left: auto;
   margin-right: auto;
@@ -159,10 +172,16 @@
   border: 2px solid rgba(106, 240, 251, 0.3);
   border-radius: 8px;
   background-color: rgba(223, 252, 255, 0.1);
-  color: #fff;
+  color: white;
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+}
+
+option {
+  font-size: 1rem;
+  background-color: #fff; /* Fondo personalizado */
+  color: #006064;            /* Texto personalizado */
 }
 
 .form-field input:focus,

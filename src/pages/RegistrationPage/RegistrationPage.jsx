@@ -435,7 +435,6 @@ function RegistrationPage() {
       case 7:
         return (
           <div className="field-slide">
-            <h2>Reconocimiento Facial</h2>
             <FaceRecognition 
               onFaceCapture={handleFaceCapture}
               initialCapturedImage={capturedImage}
