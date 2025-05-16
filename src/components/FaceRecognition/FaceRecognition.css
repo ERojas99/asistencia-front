@@ -395,7 +395,11 @@ body {
   border-radius: 8px;
   background-color: #111B34; /* Color de la paleta ANDICOM */
   max-width: 500px; /* O el ancho que prefieras */
-  margin: 20px auto;
+  margin: 20px auto; /* Esto centra el contenedor horizontalmente */
+  width: 90%; /* Asegura que ocupe el 90% del ancho disponible */
+  left: 0;
+  right: 0;
+  position: relative; /* Asegura que el posicionamiento sea relativo */
 }
 
 .video-container {
@@ -596,7 +600,11 @@ body {
   border-radius: 8px;
   background-color: #111B34; /* Color de la paleta ANDICOM */
   max-width: 500px; /* O el ancho que prefieras */
-  margin: 20px auto;
+  margin: 20px auto; /* Esto centra el contenedor horizontalmente */
+  width: 90%; /* Asegura que ocupe el 90% del ancho disponible */
+  left: 0;
+  right: 0;
+  position: relative; /* Asegura que el posicionamiento sea relativo */
 }
 
 .video-container {
