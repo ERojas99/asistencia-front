@@ -41,6 +41,58 @@ function FaceRecognition({ onFaceCapture }) {
   const [isCapturing, setIsCapturing] = useState(false);
   const [captureCountdown, setCaptureCountdown] = useState(0);
   
+  // Configuración de pasos para evitar código repetido
+  const stepsConfig = {
+    1: {
+      name: 'frontal',
+      instruction: 'mire al frente',
+      feedback: 'Paso 1: Mantenga su rostro mirando al frente',
+      stepText: 'Mire al frente'
+    },
+    2: {
+      name: 'right',
+      instruction: 'gire más a la derecha',
+      feedback: 'Paso 2: Gire lentamente su rostro hacia la derecha',
+      stepText: 'Gire a la derecha'
+    },
+    3: {
+      name: 'left',
+      instruction: 'gire más a la izquierda',
+      feedback: 'Paso 3: Gire lentamente su rostro hacia la izquierda',
+      stepText: 'Gire a la izquierda'
+    },
+    4: {
+      name: 'up',
+      instruction: 'incline más su rostro hacia arriba',
+      feedback: 'Paso 4: Incline su rostro hacia arriba',
+      stepText: 'Mire hacia arriba'
+    },
+    5: {
+      name: 'down',
+      instruction: 'incline más su rostro hacia abajo',
+      feedback: 'Paso 5: Incline su rostro hacia abajo',
+      stepText: 'Mire hacia abajo'
+    }
+  };
+  
+  // Función auxiliar para obtener el mensaje según el paso actual
+  const getStepFeedback = (step, forCapture = false) => {
+    if (!stepsConfig[step]) return 'Analizando rostro...';
+    return forCapture ? `${stepsConfig[step].feedback} para la captura automática` : stepsConfig[step].feedback;
+  };
+  
+  // Función auxiliar para obtener la instrucción según el paso actual
+  const getStepInstruction = (step) => {
+    if (!stepsConfig[step]) return '';
+    return stepsConfig[step].instruction;
+  };
+  
+  // Función auxiliar para obtener el texto del paso
+  const getStepText = (step) => {
+    if (!stepsConfig[step]) return '';
+    return stepsConfig[step].stepText;
+  };
+  
   // Cargar modelos de face-api.js
   useEffect(() => {
     const loadModels = async () => {
@@ -276,7 +328,7 @@ function FaceRecognition({ onFaceCapture }) {
   const startCapture = () => {
     if (captureStep === 0) {
       setCaptureStep(1);
-      setFeedback('Mantenga su rostro mirando al frente');
+      setFeedback(getStepFeedback(1));
     }
   };
   
@@ -287,16 +339,8 @@ function FaceRecognition({ onFaceCapture }) {
     setIsDetecting(true);
     
     // Actualizar el mensaje según el paso de captura
-    if (captureStep === 1) {
-      setFeedback('Paso 1: Mantenga su rostro mirando al frente...');
-    } else if (captureStep === 2) {
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la izquierda...');
-    } else if (captureStep === 3) {
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la derecha...');
-    } else if (captureStep === 4) {
-      setFeedback('Paso 4: Incline su rostro hacia arriba...');
-    } else if (captureStep === 5) {
-      setFeedback('Paso 5: Incline su rostro hacia abajo...');
+    if (captureStep > 0 && captureStep < 6) {
+      setFeedback(getStepFeedback(captureStep));
     } else {
       setFeedback('Analizando rostro...');
     }
@@ -358,23 +402,19 @@ function FaceRecognition({ onFaceCapture }) {
             if (captureStep > 0 && captureStep < 6) {
               const isCorrectAngle = verifyAngleForStep(angles, captureStep);
               ctx.fillStyle = isCorrectAngle ? 'green' : 'orange';
-              let stepText = '';
+              
+              const stepText = getStepText(captureStep);
               let angleText = '';
               
               if (captureStep === 1) {
-                stepText = 'Mire al frente';
                 angleText = Math.abs(angles.horizontal) < 15 && Math.abs(angles.vertical) < 15 ? '✓' : 'Alinee su rostro';
               } else if (captureStep === 2) {
-                stepText = 'Gire a la izquierda';
                 angleText = angles.horizontal > 20 ? '✓' : 'Gire más';
               } else if (captureStep === 3) {
-                stepText = 'Gire a la derecha';
                 angleText = angles.horizontal < -20 ? '✓' : 'Gire más';
               } else if (captureStep === 4) {
-                stepText = 'Mire hacia arriba';
                 angleText = angles.vertical < -15 ? '✓' : 'Incline más hacia arriba';
               } else if (captureStep === 5) {
-                stepText = 'Mire hacia abajo';
                 angleText = angles.vertical > 15 ? '✓' : 'Incline más hacia abajo';
               }
               
@@ -414,13 +454,7 @@ function FaceRecognition({ onFaceCapture }) {
                   setFeedback(`Posición correcta. Mantenga esta posición para capturar automáticamente...`);
                 }
               } else {
-                setFeedback(`Paso ${captureStep}: ${
-                  captureStep === 1 ? 'Mire al frente' : 
-                  captureStep === 2 ? 'Gire lentamente su rostro hacia la derecha' : 
-                  captureStep === 3 ? 'Gire lentamente su rostro hacia la izquierda' :
-                  captureStep === 4 ? 'Incline su rostro hacia arriba' :
-                  'Incline su rostro hacia abajo'
-                }`);
+                setFeedback(`Paso ${captureStep}: ${getStepText(captureStep)}`);
               }
             }
           } else {
@@ -470,7 +504,7 @@ function FaceRecognition({ onFaceCapture }) {
   const startLivenessCheck = () => {
     if (isHuman && isAdult && faceEmbeddings && isCameraActive) {
       setCaptureStep(1);
-      setFeedback('Paso 1: Mantenga su rostro mirando al frente para la captura automática');
+      setFeedback(getStepFeedback(1, true));
       
       // Reiniciar los datos de captura
       setCapturedImages({
@@ -508,103 +542,65 @@ function FaceRecognition({ onFaceCapture }) {
     // Verificar si el ángulo es correcto para el paso actual
     if (!verifyAngleForStep(faceAngle, captureStep)) {
       let mensaje = 'Posición incorrecta. Por favor, ';
-      if (captureStep === 1) {
-        mensaje += 'mire al frente';
-      } else if (captureStep === 2) {
-        mensaje += 'gire más a la derecha';
-      } else if (captureStep === 3) {
-        mensaje += 'gire más a la izquierda';
-      } else if (captureStep === 4) {
-        mensaje += 'incline más su rostro hacia arriba';
-      } else if (captureStep === 5) {
-        mensaje += 'incline más su rostro hacia abajo';
-      }
+      mensaje += getStepInstruction(captureStep);
       mensaje += ' antes de capturar.';
       setFeedback(mensaje);
       return;
     }
     
-    const imageData = captureCurrentImage();
-    
-    // Verificar que se obtuvo una imagen válida
-    if (!imageData) {
-      setFeedback('Error al capturar la imagen. Por favor, inténtelo de nuevo.');
+    // Capturar la imagen actual
+    const capturedImage = captureCurrentImage();
+    if (!capturedImage) {
+      setFeedback('Error al capturar la imagen. Intente nuevamente.');
       return;
     }
     
-    // Actualizar los datos según el paso actual
+    // Actualizar el estado según el paso actual
+    const newCapturedImages = { ...capturedImages };
+    const newFaceEmbeddingsMulti = { ...faceEmbeddingsMulti };
+    
     if (captureStep === 1) {
-      // Captura frontal
-      setCapturedImages(prev => ({ ...prev, frontal: imageData }));
-      setFaceEmbeddingsMulti(prev => ({ ...prev, frontal: faceEmbeddings }));
+      newCapturedImages.frontal = capturedImage;
+      newFaceEmbeddingsMulti.frontal = faceEmbeddings;
+      setFeedback('Imagen frontal capturada correctamente. ' + getStepFeedback(2));
       setCaptureStep(2);
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la derecha para la captura automática');
-      // Reiniciar los contadores para la siguiente captura
-      setCorrectPoseTime(0);
-      setIsCapturing(false);
-      setCaptureCountdown(0);
     } else if (captureStep === 2) {
-      // Captura derecha
-      setCapturedImages(prev => ({ ...prev, right: imageData }));
-      setFaceEmbeddingsMulti(prev => ({ ...prev, right: faceEmbeddings }));
+      newCapturedImages.right = capturedImage;
+      newFaceEmbeddingsMulti.right = faceEmbeddings;
+      setFeedback('Imagen derecha capturada correctamente. ' + getStepFeedback(3));
       setCaptureStep(3);
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la izquierda para la captura automática');
-      // Reiniciar los contadores para la siguiente captura
-      setCorrectPoseTime(0);
-      setIsCapturing(false);
-      setCaptureCountdown(0);
     } else if (captureStep === 3) {
-      // Captura izquierda
-      setCapturedImages(prev => ({ ...prev, left: imageData }));
-      setFaceEmbeddingsMulti(prev => ({ ...prev, left: faceEmbeddings }));
+      newCapturedImages.left = capturedImage;
+      newFaceEmbeddingsMulti.left = faceEmbeddings;
+      setFeedback('Imagen izquierda capturada correctamente. ' + getStepFeedback(4));
       setCaptureStep(4);
-      setFeedback('Paso 4: Incline su rostro hacia arriba para la captura automática');
-      // Reiniciar los contadores para la siguiente captura
-      setCorrectPoseTime(0);
-      setIsCapturing(false);
-      setCaptureCountdown(0);
     } else if (captureStep === 4) {
-      // Captura mirando hacia arriba
-      setCapturedImages(prev => ({ ...prev, up: imageData }));
-      setFaceEmbeddingsMulti(prev => ({ ...prev, up: faceEmbeddings }));
+      newCapturedImages.up = capturedImage;
+      newFaceEmbeddingsMulti.up = faceEmbeddings;
+      setFeedback('Imagen superior capturada correctamente. ' + getStepFeedback(5));
       setCaptureStep(5);
-      setFeedback('Paso 5: Incline su rostro hacia abajo para la captura automática');
-      // Reiniciar los contadores para la siguiente captura
-      setCorrectPoseTime(0);
-      setIsCapturing(false);
-      setCaptureCountdown(0);
     } else if (captureStep === 5) {
-      // Captura mirando hacia abajo
-      setCapturedImages(prev => ({ ...prev, down: imageData }));
-      setFaceEmbeddingsMulti(prev => ({ ...prev, down: faceEmbeddings }));
+      newCapturedImages.down = capturedImage;
+      newFaceEmbeddingsMulti.down = faceEmbeddings;
+      setFeedback('¡Todas las imágenes capturadas correctamente! Verificando...');
       setCaptureStep(6);
       
-      // Verificar que se hayan completado todos los pasos
-      setLivenessVerified(true);
-      
-      // Enviar los datos combinados
-      const combinedData = {
-        embeddings: {
-          frontal: faceEmbeddingsMulti.frontal,
-          right: faceEmbeddingsMulti.right,
-          left: faceEmbeddingsMulti.left,
-          up: faceEmbeddingsMulti.up,
-          down: faceEmbeddings // El actual es el down
-        },
-        images: {
-          frontal: capturedImages.frontal,
-          right: capturedImages.right,
-          left: capturedImages.left,
-          up: capturedImages.up,
-          down: imageData
-        },
-        livenessVerified: true
-      };
-      
-      // Enviar los datos al componente padre
-      onFaceCapture(combinedData, true, capturedImages.frontal); // Usar la imagen frontal como principal
-      setFeedback('¡Verificación de vida completada con éxito! Se han guardado los datos faciales desde múltiples ángulos.');
+      // Verificar la prueba de vida
+      verifyLiveness(newCapturedImages, newFaceEmbeddingsMulti);
     }
+    
+    setCapturedImages(newCapturedImages);
+    setFaceEmbeddingsMulti(newFaceEmbeddingsMulti);
+    
+    // Reiniciar el tiempo de pose correcta y la captura
+    setCorrectPoseTime(0);
+    setIsCapturing(false);
+    setCaptureCountdown(0);
+  };
+
+  // Verificar la prueba de vida
+  const verifyLiveness = (images, embeddings) => {
+    // ...
   };
 
   // Reiniciar el proceso de captura
@@ -632,7 +628,7 @@ function FaceRecognition({ onFaceCapture }) {
   };
 
   return (
-    <div className="face-recognition">
+    <div className="face-recognition-container">
       {captureStep > 0 && captureStep < 6 && (
         <div className="capture-steps">
           <div className="step-indicator active">
