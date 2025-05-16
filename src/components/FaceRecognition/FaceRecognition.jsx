@@ -642,8 +642,8 @@ function FaceRecognition({ onFaceCapture }) {
                 <div>Ponga su rostro en posición Frontal</div>
               </div>
             )}
-            {captureStep === 2 && "Gire su rostro a la Derecha"}
-            {captureStep === 3 && "Gire su rostro a la Izquierda"}
+            {captureStep === 2 && "Gire su rostro a la Izquierda"}
+            {captureStep === 3 && "Gire su rostro a la Derecha"}
             {captureStep === 4 && "Incline su rostro hacia Arriba"}
             {captureStep === 5 && "Incline su rostro hacia Abajo"}
           </div>
