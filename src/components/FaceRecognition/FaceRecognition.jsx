@@ -652,26 +652,7 @@ function FaceRecognition({ onFaceCapture }) {
       <div className="video-container">
         {captureStep === 6 ? (
           <div className="captured-images-grid">
-            <div className="captured-image-container">
-              <img src={capturedImages.frontal} alt="Rostro frontal" className="captured-image" />
-              <span className="capture-label">Frontal</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.right} alt="Rostro derecha" className="captured-image" />
-              <span className="capture-label">Derecha</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.left} alt="Rostro izquierda" className="captured-image" />
-              <span className="capture-label">Izquierda</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.up} alt="Rostro arriba" className="captured-image" />
-              <span className="capture-label">Arriba</span>
-            </div>
-            <div className="captured-image-container">
-              <img src={capturedImages.down} alt="Rostro abajo" className="captured-image" />
-              <span className="capture-label">Abajo</span>
-            </div>
+            <p>Registro facial exitoso!</p>
           </div>
         ) : (
           <>
