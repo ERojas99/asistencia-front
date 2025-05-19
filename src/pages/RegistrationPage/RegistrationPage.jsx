@@ -68,7 +68,12 @@ function RegistrationPage() {
   // Manejar cambio en los campos del formulario
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const inputValue = type === 'checkbox' ? checked : value;
+    let inputValue = type === 'checkbox' ? checked : value;
+    
+    // Filtrar caracteres no numéricos para el campo idNumber
+    if (name === 'idNumber' && !/^\d*$/.test(value)) {
+      return; // No actualizar el estado si contiene caracteres no numéricos
+    }
     
     // Actualizar el valor del campo
     setFormData(prev => ({
@@ -440,6 +445,8 @@ function RegistrationPage() {
                 placeholder="Ingrese su número de documento"
                 autoFocus
                 onKeyDown={handleKeyDown}
+                pattern="\d*"
+                inputMode="numeric"
               />
               {fieldErrors.idNumber && <p className="error-message">{fieldErrors.idNumber}</p>}
             </div>
