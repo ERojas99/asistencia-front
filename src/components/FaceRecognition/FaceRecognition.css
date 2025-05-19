@@ -824,12 +824,59 @@ body {
   color: white;
 }
 
-/* Estilo para la cuadrícula de imágenes capturadas */
 .captured-images-grid {
   display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin: 20px 0;
+  flex-direction: column; /* Para apilar el ícono y el texto */
+  justify-content: center;
+  align-items: center;
+  padding: 25px 30px; /* Más relleno para mayor espaciado */
+  margin: 30px auto; /* Centra la tarjeta y añade espacio vertical */
+  max-width: 400px; /* Ancho máximo para que se vea como una tarjeta de notificación */
+  background-color: #111B34; /* Fondo oscuro consistente con el tema */
+  border: 1px solid #6EC1E4; /* Borde de acento sutil */
+  border-radius: 12px; /* Esquinas más redondeadas */
+  box-shadow: 0 6px 20px rgba(110, 193, 228, 0.15); /* Sombra suave para dar profundidad */
+  text-align: center;
+  animation: fadeInSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Animación de entrada elegante */
+  overflow: hidden; /* Asegura que el contenido se mantenga dentro de los bordes redondeados */
+}
+
+/* Icono de éxito usando un pseudo-elemento */
+.captured-images-grid::before {
+  content: '✔'; /* Símbolo de check. Puedes usar un SVG para un diseño más personalizado */
+  font-size: 2.2rem; /* Tamaño del ícono */
+  color: #07E7F9; /* Color brillante y moderno para el ícono */
+  margin-bottom: 12px; /* Espacio entre el ícono y el texto */
+  line-height: 1; /* Ajuste de altura de línea para el ícono */
+}
+
+.captured-images-grid p {
+  font-size: 1.25rem; /* Tamaño de fuente para el mensaje */
+  font-weight: 500; /* Un peso de fuente equilibrado */
+  color: #E0E0E0; /* Color de texto claro para buen contraste sobre fondo oscuro */
+  margin: 0; /* Sin margen adicional para el párrafo */
+  line-height: 1.4; /* Altura de línea para legibilidad */
+  /*
+  Si prefieres el texto con gradiente como en la versión anterior, puedes descomentar estas líneas:
+  background: linear-gradient(to right, #87CEEB, #6EC1E4, #07E7F9);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  */
+}
+
+/* Animación para la aparición del mensaje */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px); /* Comienza ligeramente abajo */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Termina en su posición final */
+  }
 }
 
 .captured-image-container {
