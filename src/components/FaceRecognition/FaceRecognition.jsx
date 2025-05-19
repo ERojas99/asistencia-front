@@ -281,22 +281,63 @@ function FaceRecognition({ onFaceCapture }) {
   };
   
   // Procesar el video para detección facial
+  // Renderizar la flecha de dirección según el paso actual
+  const renderDirectionArrow = () => {
+    if (!isCameraActive || captureStep === 0 || captureStep === 6) return null;
+    
+    // Determinar qué flecha mostrar según el paso actual
+    switch (captureStep) {
+      case 1: // Frontal
+        return (
+          <div className="direction-arrow arrow-center">
+            <i className="fas fa-bullseye"></i>
+          </div>
+        );
+      case 2: // Derecha - La flecha debe estar a la derecha y apuntar hacia la derecha
+        return (
+          <div className="direction-arrow arrow-left">
+            <i className="fas fa-arrow-left"></i>
+          </div>
+        );
+      case 3: // Izquierda - La flecha debe estar a la izquierda y apuntar hacia la izquierda
+        return (
+          <div className="direction-arrow arrow-right">
+            <i className="fas fa-arrow-right"></i>
+          </div>
+        );
+      case 4: // Arriba
+        return (
+          <div className="direction-arrow arrow-up">
+            <i className="fas fa-arrow-up"></i>
+          </div>
+        );
+      case 5: // Abajo
+        return (
+          <div className="direction-arrow arrow-down">
+            <i className="fas fa-arrow-down"></i>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+  
   const handleVideoPlay = () => {
     if (!isModelLoaded || isDetecting || !isCameraActive) return;
     
     setIsDetecting(true);
     
-    // Actualizar el mensaje según el paso de captura
+    // Actualizar el mensaje según el paso de captura con instrucciones más claras
     if (captureStep === 1) {
-      setFeedback('Paso 1: Mantenga su rostro mirando al frente...');
+      setFeedback('Paso 1: Mantenga su rostro mirando al frente, centrado en el círculo...');
     } else if (captureStep === 2) {
-      setFeedback('Paso 2: Gire lentamente su rostro hacia la derecha...');
+      setFeedback('Paso 2: Gire lentamente su rostro hacia la DERECHA siguiendo la flecha...');
     } else if (captureStep === 3) {
-      setFeedback('Paso 3: Gire lentamente su rostro hacia la izquierda...');
+      setFeedback('Paso 3: Gire lentamente su rostro hacia la IZQUIERDA siguiendo la flecha...');
     } else if (captureStep === 4) {
-      setFeedback('Paso 4: Incline su rostro hacia arriba...');
+      setFeedback('Paso 4: Incline su rostro hacia ARRIBA siguiendo la flecha...');
     } else if (captureStep === 5) {
-      setFeedback('Paso 5: Incline su rostro hacia abajo...');
+      setFeedback('Paso 5: Incline su rostro hacia ABAJO siguiendo la flecha...');
     } else {
       setFeedback('Analizando rostro...');
     }
@@ -665,6 +706,7 @@ function FaceRecognition({ onFaceCapture }) {
               className="mirror-mode"
             />
             <canvas ref={canvasRef} className="overlay-canvas" />
+            {renderDirectionArrow()} {/* Renderizar la flecha de dirección */}
           </>
         )}
       </div>
