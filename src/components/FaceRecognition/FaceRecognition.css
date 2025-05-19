@@ -915,6 +915,134 @@ body {
 }
 /* ... existing code ... */
 
+/* Estilos para las flechas de dirección */
+.direction-arrow {
+  position: absolute;
+  width: 70px; /* Ligeramente más grande */
+  height: 70px;
+  background-color: rgba(7, 231, 249, 0.8); /* Más opaco y con el color cian brillante */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 28px; /* Ícono más grande */
+  z-index: 20;
+  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: 0 0 20px rgba(7, 231, 249, 0.7); /* Sombra más pronunciada */
+  pointer-events: none;
+  border: 2px solid #ffffff; /* Borde blanco para mayor contraste */
+}
+
+/* Posiciones de las flechas */
+.arrow-right {
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.arrow-left {
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.arrow-up {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-down {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(110, 193, 228, 0.4);
+  width: 80px;
+  height: 80px;
+}
+
+/* Animación de pulso para las flechas */
+@keyframes pulse {
+  0% {
+    transform: scale(1) translateY(-50%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1) translateY(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(-50%);
+    opacity: 0.7;
+  }
+}
+
+/* Animaciones específicas para cada dirección */
+@keyframes pulseCenter {
+  0% {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1) translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulseUp {
+  0% {
+    transform: scale(1) translateX(-50%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1) translateX(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateX(-50%);
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulseDown {
+  0% {
+    transform: scale(1) translateX(-50%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1) translateX(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateX(-50%);
+    opacity: 0.7;
+  }
+}
+
+/* Aplicar animaciones específicas */
+.arrow-center {
+  animation: pulseCenter 1.5s infinite ease-in-out;
+}
+
+.arrow-up {
+  animation: pulseUp 1.5s infinite ease-in-out;
+}
+
+.arrow-down {
+  animation: pulseDown 1.5s infinite ease-in-out;
+}
+
 /* Estilos para los indicadores de estado estáticos 
 .status-indicators-container {
   display:flexbox ;
