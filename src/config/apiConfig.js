@@ -1,7 +1,7 @@
 // Configuración de las rutas de la API
 const API_CONFIG = {
     // URL base de la API
-    BASE_URL: 'http://localhost:5000',
+    BASE_URL: 'https://asistencia-back-evtb.onrender.com',
     
     // Rutas específicas
     ENDPOINTS: {
