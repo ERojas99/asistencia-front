@@ -1,7 +1,7 @@
 // Configuración de las rutas de la API
 const API_CONFIG = {
     // URL base de la API
-      BASE_URL: process.env.VITE_API_BASE_URL || "http://localhost:5000",
+      BASE_URL: "https://sherman-product-wb-knock.trycloudflare.com",
     
     // Rutas específicas
     ENDPOINTS: {
