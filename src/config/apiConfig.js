@@ -8,7 +8,7 @@ const API_CONFIG = {
         // Visitantes
         VISITORS: {
             CHECK_EMAIL: (email) => `/api/visitors/check-email/${email}`,
-            REGISTER: '/api/visitors/register',
+            REGISTER: '/api/visitors/visitors',
             VALIDATE_FACE: '/api/visitors/validate-face',
         },
         
