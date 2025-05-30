@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './RegistrationForm.css';
+import API_CONFIG from '../../config/apiConfig';
 
 function RegistrationForm({ formData, onChange }) {
   // Inicializar con un objeto vacío por defecto para evitar undefined
@@ -42,7 +43,7 @@ function RegistrationForm({ formData, onChange }) {
     
     setIsCheckingEmail(true);
     try {
-      const response = await fetch(`https://asistencia-back-evtb.onrender.com/api/visitors/check-email/${email.toLowerCase()}`);
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.VISITORS.CHECK_EMAIL(email.toLowerCase())}`);
       const result = await response.json();
       setEmailExists(result.exists);
       

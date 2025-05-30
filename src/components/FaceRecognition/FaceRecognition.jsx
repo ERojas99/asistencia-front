@@ -44,7 +44,7 @@ function FaceRecognition({ onFaceCapture }) {
   // Cargar modelos de face-api.js
   useEffect(() => {
     const loadModels = async () => {
-      setFeedback('Cargando modelos de reconocimiento facial...');
+      // setFeedback('Cargando modelos de reconocimiento facial...');
       
       try {
         // Establecer la ruta a los modelos

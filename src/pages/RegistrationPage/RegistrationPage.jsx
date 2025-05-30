@@ -3,6 +3,8 @@ import FaceRecognition from '../../components/FaceRecognition/FaceRecognition';
 import FaceWarning from '../../pages/FaceWarning/FaceWarning';
 import logo from '../../assets/logoANDICOM.png';
 import './RegistrationPage.css';
+import API_CONFIG from '../../config/apiConfig';
+import * as faceapi from 'face-api.js';
 
 function RegistrationPage() {
   // Definimos los pasos del formulario (uno por campo)
@@ -26,7 +28,8 @@ function RegistrationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: null, message: '' });
   const [fieldErrors, setFieldErrors] = useState({});
-  
+  const [isModelLoading, setIsModelLoading] = useState(false);
+  const [modelsLoaded, setModelsLoaded] = useState(false);
   // Total de pasos: 6 campos + advertencia facial + reconocimiento facial
   const totalSteps = 8;
   
@@ -190,7 +193,37 @@ function RegistrationPage() {
       }
     }
   };
-  
+  useEffect(() => {
+    const loadFaceModels = async () => {
+      if (!modelsLoaded && !isModelLoading) {
+        setIsModelLoading(true);
+        console.log('Precargando modelos de reconocimiento facial...');
+        
+        try {
+          // Establecer la ruta a los modelos
+          const MODEL_URL = '/models';
+          
+          // Cargar los modelos necesarios
+          await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+            faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+            faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL)
+          ]);
+          
+          setModelsLoaded(true);
+          console.log('Modelos de reconocimiento facial cargados exitosamente');
+        } catch (error) {
+          console.error('Error al precargar modelos de reconocimiento facial:', error);
+        } finally {
+          setIsModelLoading(false);
+        }
+      }
+    };
+    
+    loadFaceModels();
+  }, [modelsLoaded, isModelLoading]);
+
   // Verificar si todos los campos son válidos
   useEffect(() => {
     const allFieldsValid = 
@@ -311,7 +344,9 @@ function RegistrationPage() {
           faceImage: capturedImage,
         };
         
-        const response = await fetch('https://asistencia-back-evtb.onrender.com/api/visitors', {
+        // Se están haciendo múltiples llamadas innecesarias a la API
+        // Eliminar las llamadas duplicadas y mantener solo una
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.VISITORS.REGISTER}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -349,7 +384,7 @@ function RegistrationPage() {
         message: errorMessage 
       });
     }
-  };
+};
   
   // Componente de página de agradecimiento
   const ThankYouPage = () => (
@@ -574,7 +609,15 @@ function RegistrationPage() {
             </div>
           </div>
         );
-      
+        case 8: // Paso de reconocimiento facial
+          return (
+            <div className="face-recognition-section">
+              <FaceRecognition 
+                onFaceCapture={handleFaceCapture} 
+                preloadedModels={modelsLoaded} 
+              />
+            </div>
+          );
       default:
         return null;
     }
@@ -633,6 +676,6 @@ function RegistrationPage() {
       </form>
     </div>
   );
-}
+};
 
 export default RegistrationPage;
