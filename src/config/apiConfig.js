@@ -1,7 +1,7 @@
 // Configuración de las rutas de la API
 const API_CONFIG = {
     // URL base de la API
-      BASE_URL: "https://sherman-product-wb-knock.trycloudflare.com",
+      BASE_URL: "https://asistencia-back-fastapi.onrender.com",
     
     // Rutas específicas
     ENDPOINTS: {
