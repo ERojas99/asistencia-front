@@ -1,7 +1,7 @@
 // Configuración de las rutas de la API
 const API_CONFIG = {
     // URL base de la API
-      BASE_URL: "https://asistencia-back-fastapi.onrender.com",
+      BASE_URL: import.meta.env.VITE_API_BASE_URL,
     
     // Rutas específicas
     ENDPOINTS: {
