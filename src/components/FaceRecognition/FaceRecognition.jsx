@@ -219,9 +219,9 @@ function FaceRecognition({ onFaceCapture }) {
       case 1: // Frontal
         return Math.abs(angle.horizontal) < 15 && Math.abs(angle.vertical) < 15; // Casi de frente
       case 2: // Derecha
-        return angle.horizontal > 20 && Math.abs(angle.vertical) < 15; // Girado a la derecha
+        return angle.horizontal > 90 && Math.abs(angle.vertical) < 45; // Girado a la derecha
       case 3: // Izquierda
-        return angle.horizontal < -20 && Math.abs(angle.vertical) < 15; // Girado a la izquierda
+        return angle.horizontal < -90 && Math.abs(angle.vertical) < 45; // Girado a la izquierda
       case 4: // Arriba
         return Math.abs(angle.horizontal) < 15 && angle.vertical < -20; // Mirando hacia arriba
       case 5: // Abajo
