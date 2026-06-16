@@ -1,0 +1,20 @@
+{
+  "name": "esbuild",
+  "version": "0.28.0",
+  "description": "A JavaScript bundler",
+  "main": "./mod.js",
+  "bin": {
+    "esbuild": "./mod.js"
+  },
+  "scripts": {
+    "build": "node scripts/esbuild.js ./esbuild --deno"
+  },
+  "dependencies": {
+    "tar": "^6.2.1"
+  },
+  "esbuild.binaryHashes": {
+    "@esbuild/linux-x64/bin/linux-x64/esbuild": "aafacdf135322bf47c882a4ea4db33d0375583f5b9c3fd2d4e12258e470568be",
+    "@esbuild/darwin-x64/bin/darwin-x64/esbuild": "aafacdf135322bf47c882a4ea4db33d0375583f5b9c3fd2d4e12258e470568be",
+    "@esbuild/win32-x64/bin/win32-x64/esbuild": "aafacdf135322bf47c882a4ea4db33d0375583f5b9c3fd2d4e12258e470568be"
+  }
+}
